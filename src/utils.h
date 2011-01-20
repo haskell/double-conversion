@@ -31,6 +31,25 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+#if defined(_WIN32) && !defined(__MINGW32__)
+
+typedef signed char int8_t;
+typedef unsigned char uint8_t;
+typedef short int16_t;  // NOLINT
+typedef unsigned short uint16_t;  // NOLINT
+typedef int int32_t;
+typedef unsigned int uint32_t;
+typedef __int64 int64_t;
+typedef unsigned __int64 uint64_t;
+// intptr_t and friends are defined in crtdefs.h through stdio.h.
+
+#else
+
+#include <stdint.h>
+
+#endif
+
 namespace v8 {
 namespace internal {
 
@@ -94,6 +113,83 @@ class Vector {
  private:
   T* start_;
   int length_;
+};
+
+
+// Helper class for building result strings in a character buffer. The
+// purpose of the class is to use safe operations that checks the
+// buffer bounds on all operations in debug mode.
+class StringBuilder {
+ public:
+  StringBuilder(char* buffer, int size)
+      : buffer_(buffer, size), position_(0) { }
+
+  ~StringBuilder() { if (!is_finalized()) Finalize(); }
+
+  int size() const { return buffer_.length(); }
+
+  // Get the current position in the builder.
+  int position() const {
+    ASSERT(!is_finalized());
+    return position_;
+  }
+
+  // Reset the position.
+  void Reset() { position_ = 0; }
+
+  // Add a single character to the builder. It is not allowed to add
+  // 0-characters; use the Finalize() method to terminate the string
+  // instead.
+  void AddCharacter(char c) {
+    ASSERT(c != '\0');
+    ASSERT(!is_finalized() && position_ < buffer_.length());
+    buffer_[position_++] = c;
+  }
+
+  // Add an entire string to the builder. Uses strlen() internally to
+  // compute the length of the input string.
+  void AddString(const char* s) {
+    AddSubstring(s, StrLength(s));
+  }
+
+
+  // Add the first 'n' characters of the given string 's' to the
+  // builder. The input string must have enough characters.
+  void AddSubstring(const char* s, int n) {
+    ASSERT(!is_finalized() && position_ + n < buffer_.length());
+    ASSERT(static_cast<size_t>(n) <= strlen(s));
+    memcpy(&buffer_[position_], s, n * kCharSize);
+    position_ += n;
+  }
+
+
+  // Add character padding to the builder. If count is non-positive,
+  // nothing is added to the builder.
+  void AddPadding(char c, int count) {
+    for (int i = 0; i < count; i++) {
+      AddCharacter(c);
+    }
+  }
+
+  // Finalize the string by 0-terminating it and returning the buffer.
+  char* Finalize() {
+    ASSERT(!is_finalized() && position_ < buffer_.length());
+    buffer_[position_] = '\0';
+    // Make sure nobody managed to add a 0-character to the
+    // buffer while building the string.
+    ASSERT(strlen(buffer_.start()) == static_cast<size_t>(position_));
+    position_ = -1;
+    ASSERT(is_finalized());
+    return buffer_.start();
+  }
+
+ private:
+  Vector<char> buffer_;
+  int position_;
+
+  bool is_finalized() const { return position_ < 0; }
+
+  DISALLOW_IMPLICIT_CONSTRUCTORS(StringBuilder);
 };
 
 

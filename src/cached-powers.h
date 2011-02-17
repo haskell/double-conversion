@@ -25,13 +25,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef V8_CACHED_POWERS_H_
-#define V8_CACHED_POWERS_H_
+#ifndef DOUBLE_CONVERSION_CACHED_POWERS_H_
+#define DOUBLE_CONVERSION_CACHED_POWERS_H_
 
 #include "diy-fp.h"
 
-namespace v8 {
-namespace internal {
+namespace double_conversion {
 
 class PowersOfTenCache {
  public:
@@ -60,6 +59,6 @@ class PowersOfTenCache {
                                                int* found_exponent);
 };
 
-} }  // namespace v8::internal
+}  // namespace double_conversion
 
-#endif  // V8_CACHED_POWERS_H_
+#endif  // DOUBLE_CONVERSION_CACHED_POWERS_H_

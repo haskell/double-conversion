@@ -27,14 +27,12 @@
 
 #include <math.h>
 
-#include "v8.h"
 #include "bignum-dtoa.h"
 
 #include "bignum.h"
 #include "double.h"
 
-namespace v8 {
-namespace internal {
+namespace double_conversion {
 
 static int NormalizedExponent(uint64_t significand, int exponent) {
   ASSERT(significand != 0);
@@ -498,7 +496,7 @@ static void InitialScaledStartValuesNegativeExponentNegativePower(
     Bignum* numerator, Bignum* denominator,
     Bignum* delta_minus, Bignum* delta_plus) {
   const uint64_t kMinimalNormalizedExponent =
-      V8_2PART_UINT64_C(0x00100000, 00000000);
+      UINT64_2PART_C(0x00100000, 00000000);
   uint64_t significand = Double(v).Significand();
   int exponent = Double(v).Exponent();
   // Instead of multiplying the denominator with 10^estimated_power we
@@ -652,4 +650,4 @@ static void FixupMultiply10(int estimated_power, bool is_even,
   }
 }
 
-} }  // namespace v8::internal
+}  // namespace double_conversion

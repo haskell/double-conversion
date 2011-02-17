@@ -25,11 +25,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef V8_BIGNUM_H_
-#define V8_BIGNUM_H_
+#ifndef DOUBLE_CONVERSION_BIGNUM_H_
+#define DOUBLE_CONVERSION_BIGNUM_H_
 
-namespace v8 {
-namespace internal {
+#include "utils.h"
+
+namespace double_conversion {
 
 class Bignum {
  public:
@@ -117,7 +118,7 @@ class Bignum {
   void Zero();
   // Requires this to have enough capacity (no tests done).
   // Updates used_digits_ if necessary.
-  // by must be < kBigitSize.
+  // shift_amount must be < kBigitSize.
   void BigitsShiftLeft(int shift_amount);
   // BigitLength includes the "hidden" digits encoded in the exponent.
   int BigitLength() const { return used_digits_ + exponent_; }
@@ -135,6 +136,6 @@ class Bignum {
   DISALLOW_COPY_AND_ASSIGN(Bignum);
 };
 
-} }  // namespace v8::internal
+}  // namespace double_conversion
 
-#endif  // V8_BIGNUM_H_
+#endif  // DOUBLE_CONVERSION_BIGNUM_H_

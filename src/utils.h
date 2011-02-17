@@ -1,4 +1,4 @@
-// Copyright 2006-2008 the V8 project authors. All rights reserved.
+// Copyright 2010 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -25,11 +25,41 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef V8_UTILS_H_
-#define V8_UTILS_H_
+#ifndef DOUBLE_CONVERSION_UTILS_H_
+#define DOUBLE_CONVERSION_UTILS_H_
 
 #include <stdlib.h>
 #include <string.h>
+
+#include <assert.h>
+#define ASSERT(condition)      (assert(condition))
+#define UNIMPLEMENTED() (abort())
+#define UNREACHABLE()   (abort())
+
+// Double operations detection based on target architecture.
+// Linux uses a 80bit wide floating point stack on x86. This induces double
+// rounding, which in turn leads to wrong results.
+// An easy way to test if the floating-point operations are correct is to
+// evaluate: 89255.0/1e22. If the floating-point stack is 64 bits wide then
+// the result is equal to 89255e-22.
+// The best way to test this, is to create a division-function and to compare
+// the output of the division with the expected result. (Inlining must be
+// disabled.)
+// On Linux,x86 89255e-22 != Div_double(89255.0/1e22)
+#if defined(_M_X64) || defined(__x86_64__) || \
+    defined(__ARMEL__) || \
+    defined(_MIPS_ARCH_MIPS32R2)
+#define DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS 1
+#elif defined(_M_IX86) || defined(__i386__)
+#if defined(_WIN32)
+// Windows uses a 64bit wide floating point stack.
+#define DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS 1
+#else
+#undef DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS
+#endif  // _WIN32
+#else
+#error Target architecture was not detected as supported by Double-Conversion.
+#endif
 
 
 #if defined(_WIN32) && !defined(__MINGW32__)
@@ -50,8 +80,39 @@ typedef unsigned __int64 uint64_t;
 
 #endif
 
-namespace v8 {
-namespace internal {
+// The following macro works on both 32 and 64-bit platforms.
+// Usage: instead of writing 0x1234567890123456
+//      write UINT64_2PART_C(0x12345678,90123456);
+#define UINT64_2PART_C(a, b) (((static_cast<uint64_t>(a) << 32) + 0x##b##u))
+
+
+// The expression ARRAY_SIZE(a) is a compile-time constant of type
+// size_t which represents the number of elements of the given
+// array. You should only use ARRAY_SIZE on statically allocated
+// arrays.
+#define ARRAY_SIZE(a)                                   \
+  ((sizeof(a) / sizeof(*(a))) /                         \
+  static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
+
+// A macro to disallow the evil copy constructor and operator= functions
+// This should be used in the private: declarations for a class
+#define DISALLOW_COPY_AND_ASSIGN(TypeName)      \
+  TypeName(const TypeName&);                    \
+  void operator=(const TypeName&)
+
+// A macro to disallow all the implicit constructors, namely the
+// default constructor, copy constructor and operator= functions.
+//
+// This should be used in the private: declarations for a class
+// that wants to prevent anyone from instantiating it. This is
+// especially useful for classes containing only static methods.
+#define DISALLOW_IMPLICIT_CONSTRUCTORS(TypeName) \
+  TypeName();                                    \
+  DISALLOW_COPY_AND_ASSIGN(TypeName)
+
+namespace double_conversion {
+
+static const int kCharSize = sizeof(char);
 
 // Returns the maximum of the two parameters.
 template <typename T>
@@ -73,7 +134,7 @@ inline int StrLength(const char* string) {
   return static_cast<int>(length);
 }
 
-
+// This is a simplified version of V8's Vector class.
 template <typename T>
 class Vector {
  public:
@@ -152,7 +213,6 @@ class StringBuilder {
     AddSubstring(s, StrLength(s));
   }
 
-
   // Add the first 'n' characters of the given string 's' to the
   // builder. The input string must have enough characters.
   void AddSubstring(const char* s, int n) {
@@ -191,7 +251,6 @@ class StringBuilder {
 
   DISALLOW_IMPLICIT_CONSTRUCTORS(StringBuilder);
 };
-
 
 // The type-based aliasing rule allows the compiler to assume that pointers of
 // different types (for some definition of different) never alias each other.
@@ -233,6 +292,6 @@ inline Dest BitCast(Source* source) {
   return BitCast<Dest>(reinterpret_cast<uintptr_t>(source));
 }
 
-} }  // namespace v8::internal
+}  // namespace double_conversion
 
-#endif  // V8_UTILS_H_
+#endif  // DOUBLE_CONVERSION_UTILS_H_

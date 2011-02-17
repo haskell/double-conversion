@@ -25,13 +25,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "v8.h"
-
 #include "bignum.h"
 #include "utils.h"
 
-namespace v8 {
-namespace internal {
+namespace double_conversion {
 
 Bignum::Bignum()
     : bigits_(bigits_buffer_, kBigitCapacity), used_digits_(0), exponent_(0) {
@@ -301,7 +298,7 @@ void Bignum::MultiplyByUInt64(uint64_t factor) {
 
 
 void Bignum::MultiplyByPowerOfTen(int exponent) {
-  const uint64_t kFive27 = V8_2PART_UINT64_C(0x6765c793, fa10079d);
+  const uint64_t kFive27 = UINT64_2PART_C(0x6765c793, fa10079d);
   const uint16_t kFive1 = 5;
   const uint16_t kFive2 = kFive1 * 5;
   const uint16_t kFive3 = kFive2 * 5;
@@ -764,4 +761,4 @@ void Bignum::SubtractTimes(const Bignum& other, int factor) {
 }
 
 
-} }  // namespace v8::internal
+}  // namespace double_conversion

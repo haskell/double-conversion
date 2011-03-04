@@ -25,16 +25,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "v8.h"
-
 #include "fast-dtoa.h"
 
 #include "cached-powers.h"
 #include "diy-fp.h"
 #include "double.h"
 
-namespace v8 {
-namespace internal {
+namespace double_conversion {
 
 // The minimal and maximal target exponent define the range of w's binary
 // exponent, where 'w' is the result of multiplying the input by a cached power
@@ -48,7 +45,7 @@ static const int kMaximalTargetExponent = -32;
 
 // Adjusts the last digit of the generated number, and screens out generated
 // solutions that may be inaccurate. A solution may be inaccurate if it is
-// outside the safe interval, or if we ctannot prove that it is closer to the
+// outside the safe interval, or if we cannot prove that it is closer to the
 // input than a neighboring representation of the same length.
 //
 // Input: * buffer containing the digits of too_high / 10^kappa
@@ -233,7 +230,7 @@ static const uint32_t kTen7 = 10000000;
 static const uint32_t kTen8 = 100000000;
 static const uint32_t kTen9 = 1000000000;
 
-// Returns the biggest power of ten that is less than or equal than the given
+// Returns the biggest power of ten that is less than or equal to the given
 // number. We furthermore receive the maximum number of bits 'number' has.
 // If number_bits == 0 then 0^-1 is returned
 // The number of bits must be <= 32.
@@ -242,6 +239,8 @@ static void BiggestPowerTen(uint32_t number,
                             int number_bits,
                             uint32_t* power,
                             int* exponent) {
+  ASSERT(number < (1 << (number_bits + 1)));
+
   switch (number_bits) {
     case 32:
     case 31:
@@ -458,7 +457,7 @@ static bool DigitGen(DiyFp low,
   // and thus one.e >= -60.
   ASSERT(one.e() >= -60);
   ASSERT(fractionals < one.f());
-  ASSERT(V8_2PART_UINT64_C(0xFFFFFFFF, FFFFFFFF) / 10 >= one.f());
+  ASSERT(UINT64_2PART_C(0xFFFFFFFF, FFFFFFFF) / 10 >= one.f());
   while (true) {
     fractionals *= 10;
     unit *= 10;
@@ -478,7 +477,7 @@ static bool DigitGen(DiyFp low,
 
 
 
-// Generates (at most) requested_digits of input number w.
+// Generates (at most) requested_digits digits of input number w.
 // w is a floating-point number (DiyFp), consisting of a significand and an
 // exponent. Its exponent is bounded by kMinimalTargetExponent and
 // kMaximalTargetExponent.
@@ -566,7 +565,7 @@ static bool DigitGenCounted(DiyFp w,
   // and thus one.e >= -60.
   ASSERT(one.e() >= -60);
   ASSERT(fractionals < one.f());
-  ASSERT(V8_2PART_UINT64_C(0xFFFFFFFF, FFFFFFFF) / 10 >= one.f());
+  ASSERT(UINT64_2PART_C(0xFFFFFFFF, FFFFFFFF) / 10 >= one.f());
   while (requested_digits > 0 && fractionals > w_error) {
     fractionals *= 10;
     w_error *= 10;
@@ -733,4 +732,4 @@ bool FastDtoa(double v,
   return result;
 }
 
-} }  // namespace v8::internal
+}  // namespace double_conversion

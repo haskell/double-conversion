@@ -28,15 +28,12 @@
 #include <stdarg.h>
 #include <limits.h>
 
-#include "v8.h"
-
 #include "strtod.h"
 #include "bignum.h"
 #include "cached-powers.h"
 #include "double.h"
 
-namespace v8 {
-namespace internal {
+namespace double_conversion {
 
 // 2^53 = 9007199254740992.
 // Any integer with at most 15 decimal digits will hence fit into a double
@@ -55,7 +52,7 @@ static const int kMaxDecimalPower = 309;
 static const int kMinDecimalPower = -324;
 
 // 2^64 = 18446744073709551616
-static const uint64_t kMaxUint64 = V8_2PART_UINT64_C(0xFFFFFFFF, FFFFFFFF);
+static const uint64_t kMaxUint64 = UINT64_2PART_C(0xFFFFFFFF, FFFFFFFF);
 
 
 static const double exact_powers_of_ten[] = {
@@ -175,7 +172,7 @@ static void ReadDiyFp(Vector<const char> buffer,
 static bool DoubleStrtod(Vector<const char> trimmed,
                          int exponent,
                          double* result) {
-#if (defined(V8_TARGET_ARCH_IA32) || defined(USE_SIMULATOR)) && !defined(WIN32)
+#if !defined(DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS)
   // On x86 the floating-point stack can be 64 or 80 bits wide. If it is
   // 80 bits wide (as is the case on Linux) then double-rounding occurs and the
   // result is not accurate.
@@ -233,13 +230,13 @@ static DiyFp AdjustmentPowerOfTen(int exponent) {
   // distance.
   ASSERT(PowersOfTenCache::kDecimalExponentDistance == 8);
   switch (exponent) {
-    case 1: return DiyFp(V8_2PART_UINT64_C(0xa0000000, 00000000), -60);
-    case 2: return DiyFp(V8_2PART_UINT64_C(0xc8000000, 00000000), -57);
-    case 3: return DiyFp(V8_2PART_UINT64_C(0xfa000000, 00000000), -54);
-    case 4: return DiyFp(V8_2PART_UINT64_C(0x9c400000, 00000000), -50);
-    case 5: return DiyFp(V8_2PART_UINT64_C(0xc3500000, 00000000), -47);
-    case 6: return DiyFp(V8_2PART_UINT64_C(0xf4240000, 00000000), -44);
-    case 7: return DiyFp(V8_2PART_UINT64_C(0x98968000, 00000000), -40);
+    case 1: return DiyFp(UINT64_2PART_C(0xa0000000, 00000000), -60);
+    case 2: return DiyFp(UINT64_2PART_C(0xc8000000, 00000000), -57);
+    case 3: return DiyFp(UINT64_2PART_C(0xfa000000, 00000000), -54);
+    case 4: return DiyFp(UINT64_2PART_C(0x9c400000, 00000000), -50);
+    case 5: return DiyFp(UINT64_2PART_C(0xc3500000, 00000000), -47);
+    case 6: return DiyFp(UINT64_2PART_C(0xf4240000, 00000000), -44);
+    case 7: return DiyFp(UINT64_2PART_C(0x98968000, 00000000), -40);
     default:
       UNREACHABLE();
       return DiyFp(0, 0);
@@ -370,7 +367,7 @@ static bool DiyFpStrtod(Vector<const char> buffer,
 static double BignumStrtod(Vector<const char> buffer,
                            int exponent,
                            double guess) {
-  if (guess == V8_INFINITY) {
+  if (guess == Double::Infinity()) {
     return guess;
   }
 
@@ -426,8 +423,12 @@ double Strtod(Vector<const char> buffer, int exponent) {
                                      kMaxSignificantDecimalDigits),
                   significant_exponent);
   }
-  if (exponent + trimmed.length() - 1 >= kMaxDecimalPower) return V8_INFINITY;
-  if (exponent + trimmed.length() <= kMinDecimalPower) return 0.0;
+  if (exponent + trimmed.length() - 1 >= kMaxDecimalPower) {
+    return Double::Infinity();
+  }
+  if (exponent + trimmed.length() <= kMinDecimalPower) {
+    return 0.0;
+  }
 
   double guess;
   if (DoubleStrtod(trimmed, exponent, &guess) ||
@@ -437,4 +438,4 @@ double Strtod(Vector<const char> buffer, int exponent) {
   return BignumStrtod(trimmed, exponent, guess);
 }
 
-} }  // namespace v8::internal
+}  // namespace double_conversion

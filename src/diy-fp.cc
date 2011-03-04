@@ -25,19 +25,18 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "v8.h"
 
 #include "diy-fp.h"
+#include "utils.h"
 
-namespace v8 {
-namespace internal {
+namespace double_conversion {
 
 void DiyFp::Multiply(const DiyFp& other) {
   // Simply "emulates" a 128 bit multiplication.
   // However: the resulting number only contains 64 bits. The least
   // significant 64 bits are only used for rounding the most significant 64
   // bits.
-  const uint64_t kM32 = 0xFFFFFFFFu;
+  const uint64_t kM32 = 0xFFFFFFFFU;
   uint64_t a = f_ >> 32;
   uint64_t b = f_ & kM32;
   uint64_t c = other.f_ >> 32;
@@ -55,4 +54,4 @@ void DiyFp::Multiply(const DiyFp& other) {
   f_ = result_f;
 }
 
-} }  // namespace v8::internal
+}  // namespace double_conversion

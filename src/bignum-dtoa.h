@@ -25,11 +25,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef V8_BIGNUM_DTOA_H_
-#define V8_BIGNUM_DTOA_H_
+#ifndef DOUBLE_CONVERSION_BIGNUM_DTOA_H_
+#define DOUBLE_CONVERSION_BIGNUM_DTOA_H_
 
-namespace v8 {
-namespace internal {
+#include "utils.h"
+
+namespace double_conversion {
 
 enum BignumDtoaMode {
   // Return the shortest correct representation.
@@ -76,6 +77,6 @@ enum BignumDtoaMode {
 void BignumDtoa(double v, BignumDtoaMode mode, int requested_digits,
                 Vector<char> buffer, int* length, int* point);
 
-} }  // namespace v8::internal
+}  // namespace double_conversion
 
-#endif  // V8_BIGNUM_DTOA_H_
+#endif  // DOUBLE_CONVERSION_BIGNUM_DTOA_H_

@@ -25,13 +25,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef V8_DOUBLE_H_
-#define V8_DOUBLE_H_
+#ifndef DOUBLE_CONVERSION_DOUBLE_H_
+#define DOUBLE_CONVERSION_DOUBLE_H_
 
 #include "diy-fp.h"
 
-namespace v8 {
-namespace internal {
+namespace double_conversion {
 
 // We assume that doubles and uint64_t have the same endianness.
 static uint64_t double_to_uint64(double d) { return BitCast<uint64_t>(d); }
@@ -40,11 +39,10 @@ static double uint64_to_double(uint64_t d64) { return BitCast<double>(d64); }
 // Helper functions for doubles.
 class Double {
  public:
-  static const uint64_t kSignMask = V8_2PART_UINT64_C(0x80000000, 00000000);
-  static const uint64_t kExponentMask = V8_2PART_UINT64_C(0x7FF00000, 00000000);
-  static const uint64_t kSignificandMask =
-      V8_2PART_UINT64_C(0x000FFFFF, FFFFFFFF);
-  static const uint64_t kHiddenBit = V8_2PART_UINT64_C(0x00100000, 00000000);
+  static const uint64_t kSignMask = UINT64_2PART_C(0x80000000, 00000000);
+  static const uint64_t kExponentMask = UINT64_2PART_C(0x7FF00000, 00000000);
+  static const uint64_t kSignificandMask = UINT64_2PART_C(0x000FFFFF, FFFFFFFF);
+  static const uint64_t kHiddenBit = UINT64_2PART_C(0x00100000, 00000000);
   static const int kPhysicalSignificandSize = 52;  // Excludes the hidden bit.
   static const int kSignificandSize = 53;
 
@@ -154,7 +152,7 @@ class Double {
     return DiyFp(Significand() * 2 + 1, Exponent() - 1);
   }
 
-  // Returns the two boundaries of this.
+  // Computes the two boundaries of this.
   // The bigger boundary (m_plus) is normalized. The lower boundary has the same
   // exponent as m_plus.
   // Precondition: the value encoded by this Double must be greater than 0.
@@ -186,9 +184,9 @@ class Double {
   // Returns the significand size for a given order of magnitude.
   // If v = f*2^e with 2^p-1 <= f <= 2^p then p+e is v's order of magnitude.
   // This function returns the number of significant binary digits v will have
-  // once its encoded into a double. In almost all cases this is equal to
-  // kSignificandSize. The only exception are denormals. They start with leading
-  // zeroes and their effective significand-size is hence smaller.
+  // once it's encoded into a double. In almost all cases this is equal to
+  // kSignificandSize. The only exceptions are denormals. They start with
+  // leading zeroes and their effective significand-size is hence smaller.
   static int SignificandSizeForOrderOfMagnitude(int order) {
     if (order >= (kDenormalExponent + kSignificandSize)) {
       return kSignificandSize;
@@ -197,11 +195,20 @@ class Double {
     return order - kDenormalExponent;
   }
 
+  static double Infinity() {
+    return Double(kInfinity).value();
+  }
+
+  static double NaN() {
+    return Double(kNaN).value();
+  }
+
  private:
   static const int kExponentBias = 0x3FF + kPhysicalSignificandSize;
   static const int kDenormalExponent = -kExponentBias + 1;
   static const int kMaxExponent = 0x7FF - kExponentBias;
-  static const uint64_t kInfinity = V8_2PART_UINT64_C(0x7FF00000, 00000000);
+  static const uint64_t kInfinity = UINT64_2PART_C(0x7FF00000, 00000000);
+  static const uint64_t kNaN = UINT64_2PART_C(0x7FF80000, 00000000);
 
   const uint64_t d64_;
 
@@ -233,6 +240,6 @@ class Double {
   }
 };
 
-} }  // namespace v8::internal
+}  // namespace double_conversion
 
-#endif  // V8_DOUBLE_H_
+#endif  // DOUBLE_CONVERSION_DOUBLE_H_

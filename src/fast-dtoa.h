@@ -25,11 +25,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef V8_FAST_DTOA_H_
-#define V8_FAST_DTOA_H_
+#ifndef DOUBLE_CONVERSION_FAST_DTOA_H_
+#define DOUBLE_CONVERSION_FAST_DTOA_H_
 
-namespace v8 {
-namespace internal {
+#include "utils.h"
+
+namespace double_conversion {
 
 enum FastDtoaMode {
   // Computes the shortest representation of the given input. The returned
@@ -78,6 +79,6 @@ bool FastDtoa(double d,
               int* length,
               int* decimal_point);
 
-} }  // namespace v8::internal
+}  // namespace double_conversion
 
-#endif  // V8_FAST_DTOA_H_
+#endif  // DOUBLE_CONVERSION_FAST_DTOA_H_

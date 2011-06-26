@@ -50,26 +50,26 @@ convert len act val = runST go
       frozen <- A.unsafeFreeze buf
       return $! Text frozen 0 (fromIntegral size)
 
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToShortestLength"
+foreign import ccall safe "hs-double-conversion.h _hs_ToShortestLength"
     c_ToShortestLength :: CInt
 
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToShortest"
+foreign import ccall safe "hs-double-conversion.h _hs_ToShortest"
     c_ToShortest :: CDouble -> MutableByteArray# s -> IO CInt
 
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToFixedLength"
+foreign import ccall safe "hs-double-conversion.h _hs_ToFixedLength"
     c_ToFixedLength :: CInt
 
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToFixed"
+foreign import ccall safe "hs-double-conversion.h _hs_ToFixed"
     c_ToFixed :: CDouble -> MutableByteArray# s -> CInt -> IO CInt
 
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToExponentialLength"
+foreign import ccall safe "hs-double-conversion.h _hs_ToExponentialLength"
     c_ToExponentialLength :: CInt
 
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToExponential"
+foreign import ccall safe "hs-double-conversion.h _hs_ToExponential"
     c_ToExponential :: CDouble -> MutableByteArray# s -> CInt -> IO CInt
 
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToPrecisionLength"
+foreign import ccall safe "hs-double-conversion.h _hs_ToPrecisionLength"
     c_ToPrecisionLength :: CInt
 
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToPrecision"
+foreign import ccall safe "hs-double-conversion.h _hs_ToPrecision"
     c_ToPrecision :: CDouble -> MutableByteArray# s -> CInt -> IO CInt

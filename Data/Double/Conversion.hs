@@ -73,7 +73,7 @@ convert func len act val = runST go
         fail $ "Data.Double.Conversion." ++ func ++
                ": conversion failed (invalid precision requested)"
       frozen <- A.unsafeFreeze buf
-      return $! Text frozen 0 (fromIntegral size)
+      return $ Text frozen 0 (fromIntegral size)
 
 foreign import ccall safe "hs-double-conversion.h _hs_ToShortestLength"
     c_ToShortestLength :: CInt

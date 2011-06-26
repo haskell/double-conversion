@@ -30,6 +30,7 @@ extra-source-files:
     double-conversion/test/cctest/*.cc
     double-conversion/test/cctest/*.h
     double-conversion/test/cctest/SConscript
+    include/*.h
 
 flag developer
   description: operate in developer mode

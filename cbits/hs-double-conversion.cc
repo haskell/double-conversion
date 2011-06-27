@@ -48,15 +48,24 @@ static int copy(uint16_t *buf, const StringBuilder& builder, const char *cbuf)
   return pos;
 }
 
+static inline const DoubleToStringConverter& defaultConverter(void)
+{
+  const int flags = DoubleToStringConverter::UNIQUE_ZERO;
+  static DoubleToStringConverter converter(flags,
+                                           "Infinity",
+                                           "NaN",
+                                           'e',
+                                           -6, 21,
+                                           6, 0);
+  return converter;
+}
+
 extern "C"
 int _hs_ToShortest(double value, uint16_t *buf)
 {
-  const DoubleToStringConverter& converter =
-    DoubleToStringConverter::EcmaScriptConverter();
   char cbuf[kToShortestLength];
-
   StringBuilder builder(cbuf, kToShortestLength);
-  bool ok = converter.ToShortest(value, &builder);
+  bool ok = defaultConverter().ToShortest(value, &builder);
 
   if (!ok)
     return -1;
@@ -67,12 +76,9 @@ int _hs_ToShortest(double value, uint16_t *buf)
 extern "C"
 int _hs_ToFixed(double value, uint16_t *buf, const int ndigits)
 {
-  const DoubleToStringConverter& converter =
-    DoubleToStringConverter::EcmaScriptConverter();
   char cbuf[kToFixedLength];
-
   StringBuilder builder(cbuf, kToFixedLength);
-  bool ok = converter.ToFixed(value, ndigits, &builder);
+  bool ok = defaultConverter().ToFixed(value, ndigits, &builder);
 
   if (!ok)
     return -1;
@@ -83,12 +89,9 @@ int _hs_ToFixed(double value, uint16_t *buf, const int ndigits)
 extern "C"
 int _hs_ToExponential(double value, uint16_t *buf, const int ndigits)
 {
-  const DoubleToStringConverter& converter =
-    DoubleToStringConverter::EcmaScriptConverter();
   char cbuf[kToExponentialLength];
-
   StringBuilder builder(cbuf, kToExponentialLength);
-  bool ok = converter.ToExponential(value, ndigits, &builder);
+  bool ok = defaultConverter().ToExponential(value, ndigits, &builder);
 
   if (!ok)
     return -1;
@@ -99,12 +102,9 @@ int _hs_ToExponential(double value, uint16_t *buf, const int ndigits)
 extern "C"
 int _hs_ToPrecision(double value, uint16_t *buf, const int precision)
 {
-  const DoubleToStringConverter& converter =
-    DoubleToStringConverter::EcmaScriptConverter();
   char cbuf[kToPrecisionLength];
-
   StringBuilder builder(cbuf, kToPrecisionLength);
-  bool ok = converter.ToPrecision(value, precision, &builder);
+  bool ok = defaultConverter().ToPrecision(value, precision, &builder);
 
   if (!ok)
     return -1;

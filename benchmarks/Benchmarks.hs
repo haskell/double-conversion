@@ -17,14 +17,16 @@ main = defaultMain [
          , bench "toFixed" $ whnf (toFixed 8) pi
          ]
        , bgroup "sprintf" [
-           bench "exponential" $ whnf (sprintf_exponential 3) pi
+           bench "exact" $ whnf sprintf_exact pi
+         , bench "exponential" $ whnf (sprintf_exponential 3) pi
          , bench "fixed" $ whnf (sprintf_fixed 8) pi
          , bench "generic" $ whnf (sprintf_generic 6) pi
-         , bench "generic_default" $ whnf (sprintf_generic_default 6) pi
+         , bench "generic_default" $ whnf sprintf_generic_default pi
          ]
        ]
 
-foreign import ccall safe sprintf_exponential :: CInt -> CDouble -> ()
-foreign import ccall safe sprintf_fixed :: CInt -> CDouble -> ()
-foreign import ccall safe sprintf_generic :: CInt -> CDouble -> ()
-foreign import ccall safe sprintf_generic_default :: CInt -> CDouble -> ()
+foreign import ccall unsafe sprintf_exact :: CDouble -> ()
+foreign import ccall unsafe sprintf_exponential :: CInt -> CDouble -> ()
+foreign import ccall unsafe sprintf_fixed :: CInt -> CDouble -> ()
+foreign import ccall unsafe sprintf_generic :: CInt -> CDouble -> ()
+foreign import ccall unsafe sprintf_generic_default :: CDouble -> ()

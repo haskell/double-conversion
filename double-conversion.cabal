@@ -19,6 +19,8 @@ description:
 
 extra-source-files:
     README.markdown
+    benchmarks/*.cabal
+    benchmarks/*.hs
     double-conversion/COPYING
     double-conversion/LICENSE
     double-conversion/Makefile

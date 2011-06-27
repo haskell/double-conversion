@@ -6,6 +6,8 @@ build-type:     Simple
 executable bm
   main-is: Benchmarks.hs
 
+  c-sources: sprintf.c
+
   build-depends:
     base,
     criterion >= 0.5.0.10,

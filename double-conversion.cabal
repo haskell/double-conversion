@@ -31,6 +31,8 @@ extra-source-files:
     double-conversion/test/cctest/*.h
     double-conversion/test/cctest/SConscript
     include/*.h
+    tests/*.cabal
+    tests/*.hs
 
 flag developer
   description: operate in developer mode

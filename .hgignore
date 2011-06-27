@@ -1,4 +1,4 @@
-^(?:cabal-dev|dist)$
+^(?:cabal-dev|dist|tests/dist)$
 ^demo/demo$
 \.(?:aux|eventlog|h[ip]|log|[oa]|orig|prof|ps|rej|swp)$
 ~$

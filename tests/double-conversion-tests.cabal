@@ -1,0 +1,15 @@
+name:           double-conversion-tests
+version:        0
+cabal-version:  >= 1.8
+build-type:     Simple
+
+executable qc
+  main-is: Properties.hs
+
+  build-depends:
+    QuickCheck,
+    base,
+    double-conversion,
+    test-framework,
+    test-framework-quickcheck2,
+    text >= 0.11.0.8

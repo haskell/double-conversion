@@ -48,6 +48,13 @@ static int copy(uint16_t *buf, const StringBuilder& builder, const char *cbuf)
   return pos;
 }
 
+static int copy(uint16_t *buf, const char *cbuf, const int len)
+{
+  for (int i = 0; i < len; i++)
+    buf[i] = cbuf[i];
+  return len;
+}
+
 static inline const DoubleToStringConverter& defaultConverter(void)
 {
   const int flags = DoubleToStringConverter::UNIQUE_ZERO;
@@ -61,53 +68,61 @@ static inline const DoubleToStringConverter& defaultConverter(void)
 }
 
 extern "C"
+int _hs_ToShortest(double value, char *buf)
+{
+  StringBuilder builder(buf, kToShortestLength);
+  return defaultConverter().ToShortest(value, &builder)
+    ? builder.position() : -1;
+}
+
+extern "C"
 int _hs_Text_ToShortest(double value, uint16_t *buf)
 {
   char cbuf[kToShortestLength];
-  StringBuilder builder(cbuf, kToShortestLength);
-  bool ok = defaultConverter().ToShortest(value, &builder);
+  return copy(buf, cbuf, _hs_ToShortest(value, cbuf));
+}
 
-  if (!ok)
-    return -1;
-
-  return copy(buf, builder, cbuf);
+extern "C"
+int _hs_ToFixed(double value, char *buf, const int ndigits)
+{
+  StringBuilder builder(buf, kToFixedLength);
+  return defaultConverter().ToFixed(value, ndigits, &builder)
+    ? builder.position() : -1;
 }
 
 extern "C"
 int _hs_Text_ToFixed(double value, uint16_t *buf, const int ndigits)
 {
   char cbuf[kToFixedLength];
-  StringBuilder builder(cbuf, kToFixedLength);
-  bool ok = defaultConverter().ToFixed(value, ndigits, &builder);
+  return copy(buf, cbuf, _hs_ToFixed(value, cbuf, ndigits));
+}
 
-  if (!ok)
-    return -1;
-  
-  return copy(buf, builder, cbuf);
+extern "C"
+int _hs_ToExponential(double value, char *buf, const int ndigits)
+{
+  StringBuilder builder(buf, kToExponentialLength);
+  return defaultConverter().ToExponential(value, ndigits, &builder)
+    ? builder.position() : -1;
 }
 
 extern "C"
 int _hs_Text_ToExponential(double value, uint16_t *buf, const int ndigits)
 {
   char cbuf[kToExponentialLength];
-  StringBuilder builder(cbuf, kToExponentialLength);
-  bool ok = defaultConverter().ToExponential(value, ndigits, &builder);
+  return copy(buf, cbuf, _hs_ToExponential(value, cbuf, ndigits));
+}
 
-  if (!ok)
-    return -1;
-  
-  return copy(buf, builder, cbuf);
+extern "C"
+int _hs_ToPrecision(double value, char *buf, const int precision)
+{
+  StringBuilder builder(buf, kToPrecisionLength);
+  return defaultConverter().ToPrecision(value, precision, &builder)
+    ? builder.position() : -1;
 }
 
 extern "C"
 int _hs_Text_ToPrecision(double value, uint16_t *buf, const int precision)
 {
   char cbuf[kToPrecisionLength];
-  StringBuilder builder(cbuf, kToPrecisionLength);
-  bool ok = defaultConverter().ToPrecision(value, precision, &builder);
-
-  if (!ok)
-    return -1;
-  
-  return copy(buf, builder, cbuf);
+  return copy(buf, cbuf, _hs_ToPrecision(value, cbuf, precision));
 }

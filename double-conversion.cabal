@@ -1,5 +1,5 @@
 name:           double-conversion
-version:        0.1.1.0
+version:        0.2.0.0
 license:        BSD3
 license-file:   LICENSE
 homepage:       https://github.com/mailrank/double-conversion
@@ -59,13 +59,15 @@ library
     include
 
   exposed-modules:
-    Data.Double.Conversion
+    Data.Double.Conversion.ByteString
+    Data.Double.Conversion.Text
 
   other-modules:
     Data.Double.Conversion.FFI
 
   build-depends:
     base == 4.*,
+    bytestring,
     ghc-prim,
     text >= 0.11.0.8
 

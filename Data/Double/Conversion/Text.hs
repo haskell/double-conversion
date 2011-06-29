@@ -1,7 +1,7 @@
 {-# LANGUAGE MagicHash, Rank2Types #-}
 
 -- |
--- Module      : Data.Double.Conversion
+-- Module      : Data.Double.Conversion.Text
 -- Copyright   : (c) 2011 MailRank, Inc.
 --
 -- License     : BSD-style
@@ -12,7 +12,7 @@
 -- Fast, efficient support for converting between double precision
 -- floating point values and text.
 
-module Data.Double.Conversion
+module Data.Double.Conversion.Text
     (
       toExponential
     , toFixed
@@ -70,7 +70,7 @@ convert func len act val = runST go
       buf <- A.new (fromIntegral len)
       size <- unsafeIOToST $ act (realToFrac val) (A.maBA buf)
       when (size == -1) .
-        fail $ "Data.Double.Conversion." ++ func ++
+        fail $ "Data.Double.Conversion.Text." ++ func ++
                ": conversion failed (invalid precision requested)"
       frozen <- A.unsafeFreeze buf
       return $ Text frozen 0 (fromIntegral size)

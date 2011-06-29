@@ -1,20 +1,28 @@
 {-# LANGUAGE ForeignFunctionInterface, OverloadedStrings #-}
 
 import Criterion.Main
-import Data.Double.Conversion
+import qualified Data.Double.Conversion.ByteString as B
+import qualified Data.Double.Conversion.Text as T
 import Foreign.C.Types (CInt, CDouble)
 import qualified Data.Text as T
-
-showText :: Double -> T.Text
-showText d = T.pack (show d)
+import qualified Text.Show.ByteString as BS
 
 main = defaultMain [
          bgroup "haskell" [
-           bench "show" $ whnf showText pi
-         , bench "toShortest" $ whnf toShortest pi
-         , bench "toExponential" $ whnf (toExponential 3) pi
-         , bench "toPrecision" $ whnf (toExponential 8) pi
-         , bench "toFixed" $ whnf (toFixed 8) pi
+           bench "show" $ nf show (pi::Double)
+         , bench "bytestring-show" $ whnf BS.show (pi::Double)
+         , bgroup "text" [
+             bench "toShortest" $ whnf T.toShortest pi
+           , bench "toExponential" $ whnf (T.toExponential 3) pi
+           , bench "toPrecision" $ whnf (T.toExponential 8) pi
+           , bench "toFixed" $ whnf (T.toFixed 8) pi
+           ]
+         , bgroup "bytestring" [
+             bench "toShortest" $ whnf B.toShortest pi
+           , bench "toExponential" $ whnf (B.toExponential 3) pi
+           , bench "toPrecision" $ whnf (B.toExponential 8) pi
+           , bench "toFixed" $ whnf (B.toFixed 8) pi
+           ]
          ]
        , bgroup "sprintf" [
            bench "exact" $ whnf sprintf_exact pi

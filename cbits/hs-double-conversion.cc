@@ -61,7 +61,7 @@ static inline const DoubleToStringConverter& defaultConverter(void)
 }
 
 extern "C"
-int _hs_ToShortest(double value, uint16_t *buf)
+int _hs_Text_ToShortest(double value, uint16_t *buf)
 {
   char cbuf[kToShortestLength];
   StringBuilder builder(cbuf, kToShortestLength);
@@ -74,7 +74,7 @@ int _hs_ToShortest(double value, uint16_t *buf)
 }
 
 extern "C"
-int _hs_ToFixed(double value, uint16_t *buf, const int ndigits)
+int _hs_Text_ToFixed(double value, uint16_t *buf, const int ndigits)
 {
   char cbuf[kToFixedLength];
   StringBuilder builder(cbuf, kToFixedLength);
@@ -87,7 +87,7 @@ int _hs_ToFixed(double value, uint16_t *buf, const int ndigits)
 }
 
 extern "C"
-int _hs_ToExponential(double value, uint16_t *buf, const int ndigits)
+int _hs_Text_ToExponential(double value, uint16_t *buf, const int ndigits)
 {
   char cbuf[kToExponentialLength];
   StringBuilder builder(cbuf, kToExponentialLength);
@@ -100,7 +100,7 @@ int _hs_ToExponential(double value, uint16_t *buf, const int ndigits)
 }
 
 extern "C"
-int _hs_ToPrecision(double value, uint16_t *buf, const int precision)
+int _hs_Text_ToPrecision(double value, uint16_t *buf, const int precision)
 {
   char cbuf[kToPrecisionLength];
   StringBuilder builder(cbuf, kToPrecisionLength);

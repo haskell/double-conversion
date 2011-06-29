@@ -1,5 +1,5 @@
 name:           double-conversion
-version:        0.1.0.0
+version:        0.1.1.0
 license:        BSD3
 license-file:   LICENSE
 homepage:       https://github.com/mailrank/double-conversion
@@ -60,6 +60,9 @@ library
 
   exposed-modules:
     Data.Double.Conversion
+
+  other-modules:
+    Data.Double.Conversion.FFI
 
   build-depends:
     base == 4.*,

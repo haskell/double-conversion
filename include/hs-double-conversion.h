@@ -9,13 +9,13 @@ extern "C"
 #include <stddef.h>
 
 int _hs_ToShortestLength(void);
-int _hs_ToShortest(double value, uint16_t *buf);
+int _hs_Text_ToShortest(double value, uint16_t *buf);
 int _hs_ToFixedLength(void);
-int _hs_ToFixed(double value, uint16_t *buf, int ndigits);
+int _hs_Text_ToFixed(double value, uint16_t *buf, int ndigits);
 int _hs_ToExponentialLength(void);
-int _hs_ToExponential(double value, uint16_t *buf, int ndigits);
+int _hs_Text_ToExponential(double value, uint16_t *buf, int ndigits);
 int _hs_ToPrecisionLength(void);
-int _hs_ToPrecision(double value, uint16_t *buf, int ndigits);
+int _hs_Text_ToPrecision(double value, uint16_t *buf, int ndigits);
 
 #ifdef __cplusplus
 }

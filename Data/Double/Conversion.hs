@@ -1,5 +1,4 @@
-{-# LANGUAGE ForeignFunctionInterface, MagicHash, Rank2Types,
-    UnliftedFFITypes #-}
+{-# LANGUAGE MagicHash, Rank2Types #-}
 
 -- |
 -- Module      : Data.Double.Conversion
@@ -23,6 +22,7 @@ module Data.Double.Conversion
 
 import Control.Monad (when)
 import Control.Monad.ST (unsafeIOToST, runST)
+import Data.Double.Conversion.FFI
 import Data.Text.Internal (Text(Text))
 import Foreign.C.Types (CDouble, CInt)
 import GHC.Prim (MutableByteArray#)
@@ -34,7 +34,7 @@ import qualified Data.Text.Array as A
 -- representation is computed.
 toExponential :: Int -> Double -> Text
 toExponential ndigits = convert "toExponential" len $ \val mba ->
-                        c_ToExponential val mba (fromIntegral ndigits)
+                        c_Text_ToExponential val mba (fromIntegral ndigits)
   where len = c_ToExponentialLength
         {-# NOINLINE len #-}
 
@@ -42,14 +42,14 @@ toExponential ndigits = convert "toExponential" len $ \val mba ->
 -- after the decimal point. The last emitted digit is rounded.
 toFixed :: Int -> Double -> Text
 toFixed ndigits = convert "toFixed" len $ \val mba ->
-                  c_ToFixed val mba (fromIntegral ndigits)
+                  c_Text_ToFixed val mba (fromIntegral ndigits)
   where len = c_ToFixedLength
         {-# NOINLINE len #-}
 
 -- | Compute the shortest string of digits that correctly represent
 -- the input number.
 toShortest :: Double -> Text
-toShortest = convert "toShortest" len c_ToShortest
+toShortest = convert "toShortest" len c_Text_ToShortest
   where len = c_ToShortestLength
         {-# NOINLINE len #-}
 
@@ -57,7 +57,7 @@ toShortest = convert "toShortest" len c_ToShortest
 -- exponential or decimal format. The last computed digit is rounded.
 toPrecision :: Int -> Double -> Text
 toPrecision ndigits = convert "toPrecision" len $ \val mba ->
-                      c_ToPrecision val mba (fromIntegral ndigits)
+                      c_Text_ToPrecision val mba (fromIntegral ndigits)
   where len = c_ToPrecisionLength
         {-# NOINLINE len #-}
 
@@ -74,27 +74,3 @@ convert func len act val = runST go
                ": conversion failed (invalid precision requested)"
       frozen <- A.unsafeFreeze buf
       return $ Text frozen 0 (fromIntegral size)
-
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToShortestLength"
-    c_ToShortestLength :: CInt
-
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToShortest"
-    c_ToShortest :: CDouble -> MutableByteArray# s -> IO CInt
-
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToFixedLength"
-    c_ToFixedLength :: CInt
-
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToFixed"
-    c_ToFixed :: CDouble -> MutableByteArray# s -> CInt -> IO CInt
-
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToExponentialLength"
-    c_ToExponentialLength :: CInt
-
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToExponential"
-    c_ToExponential :: CDouble -> MutableByteArray# s -> CInt -> IO CInt
-
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToPrecisionLength"
-    c_ToPrecisionLength :: CInt
-
-foreign import ccall unsafe "hs-double-conversion.h _hs_ToPrecision"
-    c_ToPrecision :: CDouble -> MutableByteArray# s -> CInt -> IO CInt

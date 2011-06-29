@@ -1,5 +1,5 @@
 import Data.Text ()
-import Data.Double.Conversion
+import Data.Double.Conversion.Text
 import System.Environment
 import System.Exit
 import System.IO

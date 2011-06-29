@@ -9,6 +9,11 @@
 --
 -- Fast, efficient support for converting between double precision
 -- floating point values and text.
+--
+-- Although about 15 times faster than plain 'show', these functions
+-- are /slower/ than their 'Text' counterparts, at roughly half the
+-- speed.  (This seems to be due to the cost of allocating
+-- 'ByteString' values via @malloc@.)
 
 module Data.Double.Conversion.ByteString
     (

@@ -11,6 +11,9 @@
 --
 -- Fast, efficient support for converting between double precision
 -- floating point values and text.
+--
+-- These functions are about 30 times faster than the default 'show'
+-- implementation for the 'Double' type.
 
 module Data.Double.Conversion.Text
     (

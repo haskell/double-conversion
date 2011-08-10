@@ -1,4 +1,4 @@
-import Data.Double.Conversion
+import Data.Double.Conversion.Text
 import Test.QuickCheck
 import Test.Framework (defaultMain, testGroup)
 import Test.Framework.Providers.QuickCheck2 (testProperty)

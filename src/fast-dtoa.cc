@@ -31,6 +31,8 @@
 #include "diy-fp.h"
 #include "double.h"
 
+#include <stdio.h>
+
 namespace double_conversion {
 
 // The minimal and maximal target exponent define the range of w's binary
@@ -222,120 +224,41 @@ static bool RoundWeedCounted(Vector<char> buffer,
   return false;
 }
 
-
-static const uint32_t kTen4 = 10000;
-static const uint32_t kTen5 = 100000;
-static const uint32_t kTen6 = 1000000;
-static const uint32_t kTen7 = 10000000;
-static const uint32_t kTen8 = 100000000;
-static const uint32_t kTen9 = 1000000000;
-
 // Returns the biggest power of ten that is less than or equal to the given
 // number. We furthermore receive the maximum number of bits 'number' has.
-// If number_bits == 0 then 0^-1 is returned
+//
+// Returns power == 10^(exponent_plus_one-1) such that
+//    power <= number < power * 10.
+// If number_bits == 0 then 0^(0-1) is returned.
 // The number of bits must be <= 32.
 // Precondition: number < (1 << (number_bits + 1)).
+
+// Inspired by the method for finding an integer log base 10 from here:
+// http://graphics.stanford.edu/~seander/bithacks.html#IntegerLog10
+static unsigned int const kSmallPowersOfTen[] =
+    {0, 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000,
+     1000000000};
+
 static void BiggestPowerTen(uint32_t number,
                             int number_bits,
                             uint32_t* power,
-                            int* exponent) {
+                            int* exponent_plus_one) {
   ASSERT(number < (1 << (number_bits + 1)));
-
-  switch (number_bits) {
-    case 32:
-    case 31:
-    case 30:
-      if (kTen9 <= number) {
-        *power = kTen9;
-        *exponent = 9;
-        break;
-      }  // else fallthrough
-    case 29:
-    case 28:
-    case 27:
-      if (kTen8 <= number) {
-        *power = kTen8;
-        *exponent = 8;
-        break;
-      }  // else fallthrough
-    case 26:
-    case 25:
-    case 24:
-      if (kTen7 <= number) {
-        *power = kTen7;
-        *exponent = 7;
-        break;
-      }  // else fallthrough
-    case 23:
-    case 22:
-    case 21:
-    case 20:
-      if (kTen6 <= number) {
-        *power = kTen6;
-        *exponent = 6;
-        break;
-      }  // else fallthrough
-    case 19:
-    case 18:
-    case 17:
-      if (kTen5 <= number) {
-        *power = kTen5;
-        *exponent = 5;
-        break;
-      }  // else fallthrough
-    case 16:
-    case 15:
-    case 14:
-      if (kTen4 <= number) {
-        *power = kTen4;
-        *exponent = 4;
-        break;
-      }  // else fallthrough
-    case 13:
-    case 12:
-    case 11:
-    case 10:
-      if (1000 <= number) {
-        *power = 1000;
-        *exponent = 3;
-        break;
-      }  // else fallthrough
-    case 9:
-    case 8:
-    case 7:
-      if (100 <= number) {
-        *power = 100;
-        *exponent = 2;
-        break;
-      }  // else fallthrough
-    case 6:
-    case 5:
-    case 4:
-      if (10 <= number) {
-        *power = 10;
-        *exponent = 1;
-        break;
-      }  // else fallthrough
-    case 3:
-    case 2:
-    case 1:
-      if (1 <= number) {
-        *power = 1;
-        *exponent = 0;
-        break;
-      }  // else fallthrough
-    case 0:
-      *power = 0;
-      *exponent = -1;
-      break;
-    default:
-      // Following assignments are here to silence compiler warnings.
-      *power = 0;
-      *exponent = 0;
-      UNREACHABLE();
+  // 1233/4096 is approximately 1/lg(10).
+  int exponent_plus_one_guess = ((number_bits + 1) * 1233 >> 12);
+  // We increment to skip over the first entry in the kPowersOf10 table.
+  // Note: kPowersOf10[i] == 10^(i-1).
+  exponent_plus_one_guess++;
+  // We don't have any guarantees that 2^number_bits <= number.
+  // TODO(floitsch): can we change the 'while' into an 'if'? We definitely see
+  // number < (2^number_bits - 1), but I haven't encountered
+  // number < (2^number_bits - 2) yet.
+  while (number < kSmallPowersOfTen[exponent_plus_one_guess]) {
+    exponent_plus_one_guess--;
   }
+  *power = kSmallPowersOfTen[exponent_plus_one_guess];
+  *exponent_plus_one = exponent_plus_one_guess;
 }
-
 
 // Generates the digits of input number w.
 // w is a floating-point number (DiyFp), consisting of a significand and an
@@ -418,10 +341,10 @@ static bool DigitGen(DiyFp low,
   // Modulo by one is an and.
   uint64_t fractionals = too_high.f() & (one.f() - 1);
   uint32_t divisor;
-  int divisor_exponent;
+  int divisor_exponent_plus_one;
   BiggestPowerTen(integrals, DiyFp::kSignificandSize - (-one.e()),
-                  &divisor, &divisor_exponent);
-  *kappa = divisor_exponent + 1;
+                  &divisor, &divisor_exponent_plus_one);
+  *kappa = divisor_exponent_plus_one;
   *length = 0;
   // Loop invariant: buffer = too_high / 10^kappa  (integer division)
   // The invariant holds for the first iteration: kappa has been initialized
@@ -526,10 +449,10 @@ static bool DigitGenCounted(DiyFp w,
   // Modulo by one is an and.
   uint64_t fractionals = w.f() & (one.f() - 1);
   uint32_t divisor;
-  int divisor_exponent;
+  int divisor_exponent_plus_one;
   BiggestPowerTen(integrals, DiyFp::kSignificandSize - (-one.e()),
-                  &divisor, &divisor_exponent);
-  *kappa = divisor_exponent + 1;
+                  &divisor, &divisor_exponent_plus_one);
+  *kappa = divisor_exponent_plus_one;
   *length = 0;
 
   // Loop invariant: buffer = w / 10^kappa  (integer division)

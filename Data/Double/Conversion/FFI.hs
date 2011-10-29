@@ -1,4 +1,4 @@
-{-# LANGUAGE ForeignFunctionInterface, MagicHash, UnliftedFFITypes #-}
+{-# LANGUAGE CPP, ForeignFunctionInterface, MagicHash, UnliftedFFITypes #-}
 
 -- |
 -- Module      : Data.Double.Conversion.FFI
@@ -29,7 +29,11 @@ module Data.Double.Conversion.FFI
     ) where
 
 import Data.Word (Word8)
+#if __GLASGOW_HASKELL__ >= 703
+import Foreign.C.Types (CDouble(CDouble), CInt(CInt))
+#else
 import Foreign.C.Types (CDouble, CInt)
+#endif
 import Foreign.Ptr (Ptr)
 import GHC.Prim (MutableByteArray#)
 

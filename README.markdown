@@ -11,11 +11,11 @@ We are happy to receive bug reports, fixes, documentation enhancements,
 and other improvements.
 
 Please report bugs via the
-[github issue tracker](https://github.com/mailrank/double-conversion/issues).
+[github issue tracker](https://github.com/bos/double-conversion/issues).
 
-Master [git repository](https://github.com/mailrank/double-conversion):
+Master [git repository](https://github.com/bos/double-conversion):
 
-* `git clone git://github.com/mailrank/double-conversion.git`
+* `git clone git://github.com/bos/double-conversion.git`
 
 There's also a [Mercurial mirror](https://bitbucket.org/bos/double-conversion):
 
@@ -27,4 +27,4 @@ Authors
 -------
 
 This library is written and maintained by Bryan O'Sullivan,
-<bos@mailrank.com>.
+<bos@serpentine.com>.

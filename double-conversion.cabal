@@ -2,11 +2,11 @@ name:           double-conversion
 version:        0.2.0.2
 license:        BSD3
 license-file:   LICENSE
-homepage:       https://github.com/mailrank/double-conversion
-bug-reports:    https://github.com/mailrank/double-conversion/issues
+homepage:       https://github.com/bos/double-conversion
+bug-reports:    https://github.com/bos/double-conversion/issues
 category:       Text
-author:         Bryan O'Sullivan <bos@mailrank.com>
-maintainer:     Bryan O'Sullivan <bos@mailrank.com>
+author:         Bryan O'Sullivan <bos@serpentine.com>
+maintainer:     Bryan O'Sullivan <bos@serpentine.com>
 stability:      experimental
 tested-with:    GHC == 7.0.3
 synopsis:       Fast conversion between double precision floating point and text
@@ -114,7 +114,7 @@ test-suite tests
 
 source-repository head
   type:     git
-  location: https://github.com/mailrank/double-conversion
+  location: https://github.com/bos/double-conversion
 
 source-repository head
   type:     mercurial

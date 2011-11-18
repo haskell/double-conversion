@@ -1,4 +1,4 @@
-{-# LANGUAGE MagicHash, Rank2Types #-}
+{-# LANGUAGE CPP, MagicHash, Rank2Types #-}
 
 -- |
 -- Module      : Data.Double.Conversion.Text
@@ -24,7 +24,12 @@ module Data.Double.Conversion.Text
     ) where
 
 import Control.Monad (when)
-import Control.Monad.ST (unsafeIOToST, runST)
+#if MIN_VERSION_base(4,4,0)
+import Control.Monad.ST.Unsafe (unsafeIOToST)
+#else
+import Control.Monad.ST (unsafeIOToST)
+#endif
+import Control.Monad.ST (runST)
 import Data.Double.Conversion.FFI
 import Data.Text.Internal (Text(Text))
 import Foreign.C.Types (CDouble, CInt)

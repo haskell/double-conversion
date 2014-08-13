@@ -1,5 +1,5 @@
 name:           double-conversion
-version:        0.2.0.6
+version:        2.0.1.0
 license:        BSD3
 license-file:   LICENSE
 homepage:       https://github.com/bos/double-conversion
@@ -8,7 +8,6 @@ category:       Text
 author:         Bryan O'Sullivan <bos@serpentine.com>
 maintainer:     Bryan O'Sullivan <bos@serpentine.com>
 stability:      experimental
-tested-with:    GHC == 7.0.3
 synopsis:       Fast conversion between double precision floating point and text
 cabal-version:  >= 1.8
 build-type:     Simple

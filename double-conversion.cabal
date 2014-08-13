@@ -37,7 +37,7 @@ extra-source-files:
     double-conversion/AUTHORS
     double-conversion/CMakeLists.txt
     double-conversion/COPYING
-    double-conversion/ChangeLog
+    double-conversion/Changelog
     double-conversion/LICENSE
     double-conversion/Makefile
     double-conversion/README

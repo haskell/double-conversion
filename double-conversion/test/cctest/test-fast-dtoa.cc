@@ -32,7 +32,7 @@ TEST(FastDtoaShortestVariousDoubles) {
   Vector<char> buffer(buffer_container, kBufferSize);
   int length;
   int point;
-  int status;
+  bool status;
 
   double min_double = 5e-324;
   status = FastDtoa(min_double, FAST_DTOA_SHORTEST, 0,
@@ -102,7 +102,7 @@ TEST(FastDtoaShortestVariousFloats) {
   Vector<char> buffer(buffer_container, kBufferSize);
   int length;
   int point;
-  int status;
+  bool status;
 
   float min_float = 1e-45f;
   status = FastDtoa(min_float, FAST_DTOA_SHORTEST_SINGLE, 0,
@@ -131,7 +131,7 @@ TEST(FastDtoaShortestVariousFloats) {
   CHECK_EQ("332307", buffer.start());
   CHECK_EQ(36, point);
 
-  status = FastDtoa(1.23405349260765015351e-41f, FAST_DTOA_SHORTEST_SINGLE, 0,
+  status = FastDtoa(1.2341e-41f, FAST_DTOA_SHORTEST_SINGLE, 0,
                     buffer, &length, &point);
   CHECK(status);
   CHECK_EQ("12341", buffer.start());
@@ -178,7 +178,7 @@ TEST(FastDtoaPrecisionVariousDoubles) {
   Vector<char> buffer(buffer_container, kBufferSize);
   int length;
   int point;
-  int status;
+  bool status;
 
   status = FastDtoa(1.0, FAST_DTOA_PRECISION, 3, buffer, &length, &point);
   CHECK(status);

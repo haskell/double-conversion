@@ -71,7 +71,10 @@ library
     double-conversion/src/fixed-dtoa.cc
     double-conversion/src/strtod.cc
 
-  extra-libraries: stdc++
+  if os(darwin)
+    extra-libraries: c++
+  else
+    extra-libraries: stdc++
 
   include-dirs:
     double-conversion/src

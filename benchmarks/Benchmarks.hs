@@ -3,7 +3,7 @@
 import Criterion.Main
 import qualified Data.Double.Conversion.ByteString as B
 import qualified Data.Double.Conversion.Text as T
-import Foreign.C.Types (CInt, CDouble)
+import Foreign.C.Types (CInt(CInt), CDouble(CDouble))
 import qualified Data.Text as T
 import qualified Text.Show.ByteString as BS
 

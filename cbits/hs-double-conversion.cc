@@ -4,7 +4,7 @@
 
 using namespace double_conversion;
 
-static const int kToShortestLength = 24;
+static const int kToShortestLength = 26;
 
 extern "C"
 int _hs_ToShortestLength(void)

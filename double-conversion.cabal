@@ -111,12 +111,15 @@ test-suite tests
   type: exitcode-stdio-1.0
   hs-source-dirs: tests
   main-is: Properties.hs
+  other-modules: Regressions
   ghc-options: -Wall
   build-depends:
+    HUnit,
     base,
     bytestring,
     double-conversion,
     test-framework,
+    test-framework-hunit,
     test-framework-quickcheck2,
     text
 

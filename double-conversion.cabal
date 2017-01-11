@@ -70,6 +70,8 @@ library
     double-conversion/src/fast-dtoa.cc
     double-conversion/src/fixed-dtoa.cc
     double-conversion/src/strtod.cc
+  js-sources:
+     jsbits/hs-double-conversion.js
 
   if os(windows)
     if arch(x86_64)

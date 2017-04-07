@@ -1,6 +1,6 @@
 name:           double-conversion
 version:        2.0.2.0
-license:        BSD3
+license:        BSD2
 license-file:   LICENSE
 homepage:       https://github.com/bos/double-conversion
 bug-reports:    https://github.com/bos/double-conversion/issues

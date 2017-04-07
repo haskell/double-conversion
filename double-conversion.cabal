@@ -80,7 +80,7 @@ library
     if os(darwin)
       extra-libraries: c++
     else
-      extra-libraries: stdc++
+      extra-libraries: stdc++ m
 
   include-dirs:
     double-conversion/src

@@ -88,7 +88,9 @@ library
 
   exposed-modules:
     Data.Double.Conversion.ByteString
+    Data.Double.Conversion.ByteStringBuilder
     Data.Double.Conversion.Text
+    Data.Double.Conversion.TextBuilder
 
   other-modules:
     Data.Double.Conversion.FFI

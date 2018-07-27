@@ -3,7 +3,7 @@ module Regressions
       tests
     ) where
 
-import Data.Double.Conversion.Text (toShortest)
+import Data.FP.Conversion.Convertable
 import Test.HUnit (Assertion, assertEqual)
 import Data.Text (unpack)
 import Numeric (showFFloat)

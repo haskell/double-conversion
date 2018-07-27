@@ -3,9 +3,9 @@
 #include <string.h>
 
 #include "cctest.h"
-#include "double-conversion.h"
-#include "ieee.h"
-#include "utils.h"
+#include "double-conversion/double-conversion.h"
+#include "double-conversion/ieee.h"
+#include "double-conversion/utils.h"
 
 // DoubleToString is already tested in test-dtoa.cc.
 
@@ -1804,6 +1804,18 @@ TEST(StringToDoubleVarious) {
   CHECK_EQ(0, processed);
 
 
+  flags = StringToDoubleConverter::ALLOW_TRAILING_JUNK;
+
+  CHECK_EQ(123.0, StrToD("123e", flags, 0.0, &processed, &all_used));
+  CHECK_EQ(processed, 3);
+
+  CHECK_EQ(123.0, StrToD("123e-", flags, 0.0, &processed, &all_used));
+  CHECK_EQ(processed, 3);
+
+  CHECK_EQ(123.0, StrToD("123e-a", flags, 0.0, &processed, &all_used));
+  CHECK_EQ(processed, 3);
+
+
   flags = StringToDoubleConverter::ALLOW_LEADING_SPACES |
       StringToDoubleConverter::ALLOW_SPACES_AFTER_SIGN |
       StringToDoubleConverter::ALLOW_TRAILING_SPACES |
@@ -3184,10 +3196,10 @@ TEST(StringToDoubleCommentExamples) {
   CHECK(all_used);
 
   CHECK_EQ(123.0, StrToD("123e", flags, 0.0, &processed, &all_used));
-  CHECK(all_used);
+  CHECK_EQ(processed, 3);
 
   CHECK_EQ(123.0, StrToD("123e-", flags, 0.0, &processed, &all_used));
-  CHECK(all_used);
+  CHECK_EQ(processed, 3);
 
   {
     StringToDoubleConverter converter(flags, 0.0, 1.0, "infinity", "NaN");
@@ -4709,4 +4721,47 @@ TEST(StringToDoubleFloatWhitespace) {
                            Single::NaN(),
                            &processed, &all_used));
   CHECK(all_used);
+}
+
+
+TEST(StringToDoubleCaseInsensitiveSpecialValues) {
+  int processed = 0;
+
+  int flags = StringToDoubleConverter::ALLOW_CASE_INSENSIBILITY |
+    StringToDoubleConverter::ALLOW_LEADING_SPACES |
+    StringToDoubleConverter::ALLOW_TRAILING_JUNK |
+    StringToDoubleConverter::ALLOW_TRAILING_SPACES;
+
+  // Use 1.0 as junk_string_value.
+  StringToDoubleConverter converter(flags, 0.0, 1.0, "infinity", "nan");
+
+  CHECK_EQ(Double::NaN(), converter.StringToDouble("+nan", 4, &processed));
+  CHECK_EQ(4, processed);
+
+  CHECK_EQ(Double::NaN(), converter.StringToDouble("-nAN", 4, &processed));
+  CHECK_EQ(4, processed);
+
+  CHECK_EQ(Double::NaN(), converter.StringToDouble("nAN", 3, &processed));
+  CHECK_EQ(3, processed);
+
+  CHECK_EQ(Double::NaN(), converter.StringToDouble("nANabc", 6, &processed));
+  CHECK_EQ(3, processed);
+
+  CHECK_EQ(+Double::Infinity(),
+           converter.StringToDouble("+Infinity", 9, &processed));
+  CHECK_EQ(9, processed);
+
+  CHECK_EQ(-Double::Infinity(),
+           converter.StringToDouble("-INFinity", 9, &processed));
+  CHECK_EQ(9, processed);
+
+  CHECK_EQ(Double::Infinity(),
+           converter.StringToDouble("infINITY", 8, &processed));
+  CHECK_EQ(8, processed);
+
+  CHECK_EQ(1.0, converter.StringToDouble("INF", 3, &processed));
+  CHECK_EQ(0, processed);
+
+  CHECK_EQ(1.0, converter.StringToDouble("+inf", 4, &processed));
+  CHECK_EQ(0, processed);
 }

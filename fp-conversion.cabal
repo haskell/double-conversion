@@ -1,23 +1,28 @@
-name:           double-conversion
-version:        2.0.2.0
+name:           fp-conversion
+version:        1.0.0.0
 license:        BSD3
 license-file:   LICENSE
-homepage:       https://github.com/bos/double-conversion
-bug-reports:    https://github.com/bos/double-conversion/issues
+homepage:       https://github.com/Haskell-mouse/fp-conversion
+bug-reports:    https://github.com/Haskell-mouse/fp-conversion/issues
 category:       Text
-author:         Bryan O'Sullivan <bos@serpentine.com>
-maintainer:     Bryan O'Sullivan <bos@serpentine.com>
+author:         Rinat Stryungis <lazybonesxp@gmail.com>
+maintainer:     Rinat Stryungis <lazybonesxp@gmail.com>
 stability:      experimental
-synopsis:       Fast conversion between double precision floating point and text
+synopsis:       Fast conversion between single and double precision floating point and text
 cabal-version:  >= 1.8
 build-type:     Simple
 description:
-    A library that performs fast, accurate conversion between double
-    precision floating point and text.
+    A library that performs fast, accurate conversion between 
+    floating point and text.
     .
-    This library is implemented as bindings to the C++
+    This library is a fork from double-conversion library
+    <https://github.com/bos/double-conversion>, which is 
+    implemented as bindings to the C++
     @double-conversion@ library written by Florian Loitsch at Google:
-    <https://github.com/floitsch/double-conversion>.
+    <https://github.com/google/double-conversion>.
+    .
+    Now it can convert single precision numbers, and also it can create 
+    Builder, instead of bytestring or text. 
     .
     The 'Text' versions of these functions are about 30 times faster
     than the default 'show' implementation for the 'Double' type.
@@ -25,6 +30,9 @@ description:
     The 'ByteString' versions are /slower/ than the 'Text' versions;
     roughly half the speed.  (This seems to be due to the cost of
     allocating 'ByteString' values via @malloc@.)
+    .
+    Builder versions are slower on single values, but much faster on lists 
+    (~ 20x faster on list with 20000 doubles).  
     .
     As a final note, be aware that the @bytestring-show@ package is
     about 50% slower than simply using 'show'.
@@ -87,13 +95,14 @@ library
     include
 
   exposed-modules:
-    Data.Double.Conversion.ByteString
-    Data.Double.Conversion.ByteStringBuilder
-    Data.Double.Conversion.Text
-    Data.Double.Conversion.TextBuilder
+    Data.FP.Conversion.Convertable
 
   other-modules:
-    Data.Double.Conversion.FFI
+    Data.FP.Conversion.FFI
+    Data.FP.Conversion.ByteString
+    Data.FP.Conversion.ByteStringBuilder
+    Data.FP.Conversion.Text
+    Data.FP.Conversion.TextBuilder
 
   build-depends:
     base == 4.*,
@@ -119,7 +128,7 @@ test-suite tests
     HUnit,
     base,
     bytestring,
-    double-conversion,
+    fp-conversion,
     test-framework,
     test-framework-hunit,
     test-framework-quickcheck2,
@@ -127,8 +136,4 @@ test-suite tests
 
 source-repository head
   type:     git
-  location: https://github.com/bos/double-conversion
-
-source-repository head
-  type:     mercurial
-  location: https://bitbucket.org/bos/double-conversion
+  location: https://github.com/Haskell-mouse/fp-conversion

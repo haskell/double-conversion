@@ -1,8 +1,7 @@
 import Test.Framework (Test, defaultMain, testGroup)
 import Test.Framework.Providers.QuickCheck2 (testProperty)
 import qualified Data.ByteString.Char8 as B
-import qualified Data.Double.Conversion.ByteString as B
-import qualified Data.Double.Conversion.Text as T
+import qualified Data.FP.Conversion.Convertable as B
 import qualified Data.Text as T
 import qualified Regressions
 
@@ -15,8 +14,8 @@ shortest f a b = case read (f ab) of
 
 tests :: Test
 tests = testGroup "Properties" [
-    testProperty "b_shortest" $ shortest (B.unpack . B.toShortest)
-  , testProperty "t_shortest" $ shortest (T.unpack . T.toShortest)
+    testProperty "b_shortest" $ shortest (B.unpack . toShortest)
+  , testProperty "t_shortest" $ shortest (T.unpack . toShortest)
   ]
 
 main :: IO ()

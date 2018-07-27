@@ -1,0 +1,8 @@
+resolver: lts-12.2
+
+packages:
+- .
+
+extra-deps:
+- C:\Haskell\double-conversion
+- bytestring-show-0.3.5.6@sha256:a923f5b218cbfc39a6fea6e8d5cb09bb96373e4b2ca8dfd11b1c05253088d858

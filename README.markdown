@@ -3,7 +3,7 @@
 double-conversion is a fast Haskell library for converting between
 double precision floating point numbers and text strings.  It is
 implemented as a binding to the V8-derived C++ [double-conversion
-library](https://github.com/floitsch/double-conversion).
+library](https://github.com/google/double-conversion).
 
 # Join in!
 

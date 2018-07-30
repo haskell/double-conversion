@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, MagicHash, Rank2Types #-}
+{-# LANGUAGE CPP, MagicHash, Rank2Types, TypeFamilies #-}
 
 -- |
 -- Module      : Data.Double.Conversion.Text
@@ -17,10 +17,7 @@
 
 module Data.Double.Conversion.Text
     (
-      toExponential
-    , toFixed
-    , toPrecision
-    , toShortest
+      convert
     ) where
 
 import Control.Monad (when)
@@ -29,51 +26,23 @@ import Control.Monad.ST.Unsafe (unsafeIOToST)
 #else
 import Control.Monad.ST (unsafeIOToST)
 #endif
-import Control.Monad.ST (runST)
-import Data.Double.Conversion.FFI
-import Data.Text.Internal (Text(Text))
-import Foreign.C.Types (CDouble, CInt)
-import GHC.Prim (MutableByteArray#)
+import Control.Monad.ST (ST, runST)
+import Data.Double.Conversion.FFI (ForeignFloating)
 import qualified Data.Text.Array as A
+import Data.Text.Internal (Text(Text))
+import Foreign.C.Types (CDouble, CFloat, CInt)
+import GHC.Prim (MutableByteArray#)
 
--- | Compute a representation in exponential format with the requested
--- number of digits after the decimal point. The last emitted digit is
--- rounded.  If -1 digits are requested, then the shortest exponential
--- representation is computed.
-toExponential :: Int -> Double -> Text
-toExponential ndigits = convert "toExponential" len $ \val mba ->
-                        c_Text_ToExponential val mba (fromIntegral ndigits)
-  where len = c_ToExponentialLength
-        {-# NOINLINE len #-}
 
--- | Compute a decimal representation with a fixed number of digits
--- after the decimal point. The last emitted digit is rounded.
-toFixed :: Int -> Double -> Text
-toFixed ndigits = convert "toFixed" len $ \val mba ->
-                  c_Text_ToFixed val mba (fromIntegral ndigits)
-  where len = c_ToFixedLength
-        {-# NOINLINE len #-}
-
--- | Compute the shortest string of digits that correctly represent
--- the input number.
-toShortest :: Double -> Text
-toShortest = convert "toShortest" len c_Text_ToShortest
-  where len = c_ToShortestLength
-        {-# NOINLINE len #-}
-
--- | Compute @precision@ leading digits of the given value either in
--- exponential or decimal format. The last computed digit is rounded.
-toPrecision :: Int -> Double -> Text
-toPrecision ndigits = convert "toPrecision" len $ \val mba ->
-                      c_Text_ToPrecision val mba (fromIntegral ndigits)
-  where len = c_ToPrecisionLength
-        {-# NOINLINE len #-}
-
-convert :: String -> CInt
-        -> (forall s. CDouble -> MutableByteArray# s -> IO CInt)
-        -> Double -> Text
+convert :: (RealFloat a, RealFloat b, b ~ ForeignFloating a) => String -> CInt
+        -> (forall s. b -> MutableByteArray# s -> IO CInt)
+        -> a -> Text
+{-# SPECIALIZE convert :: String -> CInt -> (forall s. CDouble -> MutableByteArray# s -> IO CInt) -> Double -> Text #-}
+{-# SPECIALIZE convert :: String -> CInt -> (forall s. CFloat -> MutableByteArray# s -> IO CInt) -> Float -> Text #-}
+{-# INLINABLE convert #-}
 convert func len act val = runST go
   where
+    go :: (forall s. ST s Text)
     go = do
       buf <- A.new (fromIntegral len)
       size <- unsafeIOToST $ act (realToFrac val) (A.maBA buf)

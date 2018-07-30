@@ -1,4 +1,4 @@
-name:           double-conversion-benchmarks
+name:           fp-conversion-benchmarks
 version:        0
 cabal-version:  >= 1.8
 build-type:     Simple
@@ -10,7 +10,8 @@ executable bm
 
   build-depends:
     base,
+    bytestring, 
     bytestring-show,
     criterion >= 0.5.0.10,
-    double-conversion,
+    fp-conversion,
     text >= 0.11.0.8

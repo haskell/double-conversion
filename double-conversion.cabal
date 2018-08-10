@@ -80,7 +80,10 @@ library
     if os(darwin)
       extra-libraries: c++
     else
-      extra-libraries: stdc++
+      if impl(ghc >= 8)
+        extra-libraries: c++
+      else
+        extra-libraries: stdc++
 
   include-dirs:
     double-conversion/src

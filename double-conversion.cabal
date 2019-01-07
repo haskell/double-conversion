@@ -33,19 +33,18 @@ extra-source-files:
     README.markdown
     benchmarks/*.cabal
     benchmarks/*.hs
-    double-conversion/*.cmake.in
+    double-conversion/cmake/*.cmake.in
     double-conversion/AUTHORS
     double-conversion/CMakeLists.txt
     double-conversion/COPYING
     double-conversion/Changelog
     double-conversion/LICENSE
     double-conversion/Makefile
-    double-conversion/README
+    double-conversion/README.md
     double-conversion/SConstruct
-    double-conversion/src/*.cc
-    double-conversion/src/*.h
-    double-conversion/src/CMakeLists.txt
-    double-conversion/src/SConscript
+    double-conversion/double-conversion/*.cc
+    double-conversion/double-conversion/*.h
+    double-conversion/double-conversion/SConscript
     double-conversion/test/CMakeLists.txt
     double-conversion/test/cctest/*.cc
     double-conversion/test/cctest/*.h
@@ -62,14 +61,14 @@ flag developer
 library
   c-sources:
     cbits/hs-double-conversion.cc
-    double-conversion/src/bignum.cc
-    double-conversion/src/bignum-dtoa.cc
-    double-conversion/src/cached-powers.cc
-    double-conversion/src/diy-fp.cc
-    double-conversion/src/double-conversion.cc
-    double-conversion/src/fast-dtoa.cc
-    double-conversion/src/fixed-dtoa.cc
-    double-conversion/src/strtod.cc
+    double-conversion/double-conversion/bignum.cc
+    double-conversion/double-conversion/bignum-dtoa.cc
+    double-conversion/double-conversion/cached-powers.cc
+    double-conversion/double-conversion/diy-fp.cc
+    double-conversion/double-conversion/double-conversion.cc
+    double-conversion/double-conversion/fast-dtoa.cc
+    double-conversion/double-conversion/fixed-dtoa.cc
+    double-conversion/double-conversion/strtod.cc
 
   if os(windows)
     if arch(x86_64)
@@ -83,7 +82,7 @@ library
       extra-libraries: stdc++
 
   include-dirs:
-    double-conversion/src
+    double-conversion/double-conversion
     include
 
   exposed-modules:

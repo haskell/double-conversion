@@ -59,17 +59,13 @@ flag developer
   default: False
   manual: True
 
+flag embedded_double_conversion
+  description: embed the C++ double_conversion library
+  default: True
+
 library
   c-sources:
     cbits/hs-double-conversion.cc
-    double-conversion/src/bignum.cc
-    double-conversion/src/bignum-dtoa.cc
-    double-conversion/src/cached-powers.cc
-    double-conversion/src/diy-fp.cc
-    double-conversion/src/double-conversion.cc
-    double-conversion/src/fast-dtoa.cc
-    double-conversion/src/fixed-dtoa.cc
-    double-conversion/src/strtod.cc
 
   if os(windows)
     if arch(x86_64)
@@ -82,8 +78,22 @@ library
     else
       extra-libraries: stdc++
 
+  if flag(embedded_double_conversion)
+    c-sources:
+      double-conversion/src/bignum.cc
+      double-conversion/src/bignum-dtoa.cc
+      double-conversion/src/cached-powers.cc
+      double-conversion/src/diy-fp.cc
+      double-conversion/src/double-conversion.cc
+      double-conversion/src/fast-dtoa.cc
+      double-conversion/src/fixed-dtoa.cc
+      double-conversion/src/strtod.cc
+    cc-options: -DEMBEDDED_DOUBLE_CONVERSION
+    include-dirs: double-conversion/src
+  else
+    extra-libraries: double-conversion
+
   include-dirs:
-    double-conversion/src
     include
 
   exposed-modules:

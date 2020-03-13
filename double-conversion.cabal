@@ -1,15 +1,15 @@
 name:           double-conversion
-version:        2.0.2.0
+version:        2.0.3.0
 license:        BSD3
 license-file:   LICENSE
-homepage:       https://github.com/bos/double-conversion
-bug-reports:    https://github.com/bos/double-conversion/issues
+homepage:       https://github.com/Haskell-mouse/double-conversion
+bug-reports:    https://github.com/Haskell-mouse/double-conversion/issues
 category:       Text
 author:         Bryan O'Sullivan <bos@serpentine.com>
 maintainer:     Bryan O'Sullivan <bos@serpentine.com>
 stability:      experimental
 synopsis:       Fast conversion between single and double precision floating point and text
-cabal-version:  >= 1.8
+cabal-version:  >= 1.10
 build-type:     Simple
 description:
     A library that performs fast, accurate conversion between 
@@ -29,7 +29,7 @@ description:
     roughly half the speed.  (This seems to be due to the cost of
     allocating 'ByteString' values via @malloc@.)
     .
-    Builder versions are slower on single values, but much faster on lists 
+    Builder versions are slower on single value, but they are much faster on large number of values 
     (up to 50x faster on list with 20000 doubles).  
     .
     As a final note, be aware that the @bytestring-show@ package is
@@ -134,8 +134,4 @@ test-suite tests
 
 source-repository head
   type:     git
-  location: https://github.com/bos/double-conversion
-
-source-repository head
-  type:     mercurial
-  location: https://bitbucket.org/bos/double-conversion
+  location: https://github.com/Haskell-mouse/double-conversion

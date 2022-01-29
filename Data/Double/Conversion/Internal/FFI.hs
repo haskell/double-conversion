@@ -55,26 +55,14 @@ type instance ForeignFloating Float = CFloat
 foreign import ccall unsafe "hs-double-conversion.h _hs_ToShortestLength"
     c_ToShortestLength :: CInt
 
-foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToShortest"
-    c_Text_ToShortest :: CDouble -> MutableByteArray# s -> IO CInt
-
 foreign import ccall unsafe "hs-double-conversion.h _hs_ToShortest"
     c_ToShortest :: CDouble -> Ptr Word8 -> IO CInt
-
-foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToShortestFloat"
-    c_Text_ToShortestFloat :: CFloat -> MutableByteArray# s -> IO CInt
 
 foreign import ccall unsafe "hs-double-conversion.h _hs_ToShortestFloat"
     c_ToShortestFloat :: CFloat -> Ptr Word8 -> IO CInt
 
 foreign import ccall unsafe "hs-double-conversion.h _hs_ToFixedLength"
     c_ToFixedLength :: CInt
-
-foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToFixed"
-    c_Text_ToFixed :: CDouble -> MutableByteArray# s -> CInt -> IO CInt
-
-foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToFixedFloat"
-    c_Text_ToFixedFloat :: CFloat -> MutableByteArray# s -> CInt -> IO CInt
 
 foreign import ccall unsafe "hs-double-conversion.h _hs_ToFixed"
     c_ToFixed :: CDouble -> Ptr Word8 -> CInt -> IO CInt
@@ -85,14 +73,8 @@ foreign import ccall unsafe "hs-double-conversion.h _hs_ToFixedFloat"
 foreign import ccall unsafe "hs-double-conversion.h _hs_ToExponentialLength"
     c_ToExponentialLength :: CInt
 
-foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToExponential"
-    c_Text_ToExponential :: CDouble -> MutableByteArray# s -> CInt -> IO CInt
-
 foreign import ccall unsafe "hs-double-conversion.h _hs_ToExponential"
     c_ToExponential :: CDouble -> Ptr Word8 -> CInt -> IO CInt
-
-foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToExponentialFloat"
-    c_Text_ToExponentialFloat :: CFloat -> MutableByteArray# s -> CInt -> IO CInt
 
 foreign import ccall unsafe "hs-double-conversion.h _hs_ToExponentialFloat"
     c_ToExponentialFloat :: CFloat -> Ptr Word8 -> CInt -> IO CInt
@@ -100,14 +82,44 @@ foreign import ccall unsafe "hs-double-conversion.h _hs_ToExponentialFloat"
 foreign import ccall unsafe "hs-double-conversion.h _hs_ToPrecisionLength"
     c_ToPrecisionLength :: CInt
 
-foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToPrecision"
-    c_Text_ToPrecision :: CDouble -> MutableByteArray# s -> CInt -> IO CInt
-
 foreign import ccall unsafe "hs-double-conversion.h _hs_ToPrecision"
     c_ToPrecision :: CDouble -> Ptr Word8 -> CInt -> IO CInt
 
-foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToPrecisionFloat"
-    c_Text_ToPrecisionFloat :: CFloat -> MutableByteArray# s -> CInt -> IO CInt
-
 foreign import ccall unsafe "hs-double-conversion.h _hs_ToPrecisionFloat"
     c_ToPrecisionFloat :: CFloat -> Ptr Word8 -> CInt -> IO CInt
+
+#if MIN_VERSION_text(2,0,0)
+foreign import ccall unsafe "hs-double-conversion.h _hs_ToShortest"
+    c_Text_ToShortest :: CDouble -> MutableByteArray# s -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_ToShortestFloat"
+    c_Text_ToShortestFloat :: CFloat -> MutableByteArray# s -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_ToFixed"
+    c_Text_ToFixed :: CDouble -> MutableByteArray# s -> CInt -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_ToFixedFloat"
+    c_Text_ToFixedFloat :: CFloat -> MutableByteArray# s-> CInt -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_ToExponential"
+    c_Text_ToExponential :: CDouble -> MutableByteArray# s -> CInt -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_ToExponentialFloat"
+    c_Text_ToExponentialFloat :: CFloat -> MutableByteArray# s -> CInt -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_ToPrecision"
+    c_Text_ToPrecision :: CDouble -> MutableByteArray# s -> CInt -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_ToPrecisionFloat"
+    c_Text_ToPrecisionFloat :: CFloat -> MutableByteArray# s -> CInt -> IO CInt
+#else
+foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToShortest"
+    c_Text_ToShortest :: CDouble -> MutableByteArray# s -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToShortestFloat"
+    c_Text_ToShortestFloat :: CFloat -> MutableByteArray# s -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToFixed"
+    c_Text_ToFixed :: CDouble -> MutableByteArray# s -> CInt -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToFixedFloat"
+    c_Text_ToFixedFloat :: CFloat -> MutableByteArray# s -> CInt -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToExponential"
+    c_Text_ToExponential :: CDouble -> MutableByteArray# s -> CInt -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToExponentialFloat"
+    c_Text_ToExponentialFloat :: CFloat -> MutableByteArray# s -> CInt -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToPrecision"
+    c_Text_ToPrecision :: CDouble -> MutableByteArray# s -> CInt -> IO CInt
+foreign import ccall unsafe "hs-double-conversion.h _hs_Text_ToPrecisionFloat"
+    c_Text_ToPrecisionFloat :: CFloat -> MutableByteArray# s -> CInt -> IO CInt
+#endif

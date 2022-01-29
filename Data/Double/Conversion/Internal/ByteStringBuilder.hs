@@ -21,7 +21,7 @@ module Data.Double.Conversion.Internal.ByteStringBuilder
 
 import Control.Monad (when)
 
-import Data.ByteString.Builder.Prim.Internal (BoundedPrim, boundedPrim)
+import Data.ByteString.Builder.Prim.Internal (BoundedPrim, boudedPrim)
 
 import Data.Double.Conversion.Internal.FFI (ForeignFloating)
 import Data.Word (Word8)
@@ -32,7 +32,7 @@ convert :: (RealFloat a, RealFloat b , b ~ ForeignFloating a) => String -> CInt 
 {-# SPECIALIZE convert :: String -> CInt -> (CDouble -> Ptr Word8 -> IO CInt) -> BoundedPrim Double #-}
 {-# SPECIALIZE convert :: String -> CInt -> (CFloat -> Ptr Word8 -> IO CInt) -> BoundedPrim Float #-}
 {-# INLINABLE convert #-}
-convert func len act = boundedPrim (fromIntegral len) $ \val ptr -> do
+convert func len act = boudedPrim (fromIntegral len) $ \val ptr -> do
   size <- act (realToFrac val) ptr
   when (size == -1) .
     fail $ "Data.Double.Conversion.ByteString." ++ func ++

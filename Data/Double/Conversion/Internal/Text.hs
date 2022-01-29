@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, MagicHash, Rank2Types, TypeFamilies #-}
+{-# LANGUAGE CPP, MagicHash, Rank2Types, TypeFamilies, BangPatterns #-}
 
 -- |
 -- Module      : Data.Double.Conversion.Text
@@ -45,7 +45,12 @@ convert func len act val = runST go
     go :: (forall s. ST s Text)
     go = do
       buf <- A.new (fromIntegral len)
-      size <- unsafeIOToST $ act (realToFrac val) (A.maBA buf)
+#if MIN_VERSION_text(2,0,0)
+      let !(A.MutableByteArray ma) = buf
+#else
+      let ma = A.maBA buf
+#endif
+      size <- unsafeIOToST $ act (realToFrac val) ma
       when (size == -1) .
         fail $ "Data.Double.Conversion.Text." ++ func ++
                ": conversion failed (invalid precision requested)"

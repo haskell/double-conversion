@@ -13,9 +13,9 @@
 -- FFI interface support for converting between
 -- floating point values and text.
 
-module Data.Double.Conversion.FFI
+module Data.Double.Conversion.Internal.FFI
     (
-      ForeignFloating (..)
+      ForeignFloating
     , c_Text_ToExponential
     , c_Text_ToExponentialFloat
     , c_Text_ToFixed

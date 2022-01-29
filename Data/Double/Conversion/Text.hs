@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, MagicHash, Rank2Types, TypeFamilies #-}
+{-# LANGUAGE CPP, MagicHash, Rank2Types #-}
 
 -- |
 -- Module      : Data.Double.Conversion.Text
@@ -9,6 +9,10 @@
 -- Stability   : experimental
 -- Portability : GHC
 --
+-- This module left now only for compatibility and should not be used
+-- in new projects. 
+-- Please, use Convertable type class from Data.Double.Conversion.Convertable
+--
 -- Fast, efficient support for converting between double precision
 -- floating point values and text.
 --
@@ -17,37 +21,33 @@
 
 module Data.Double.Conversion.Text
     (
-      convert
+      toExponential
+    , toFixed
+    , toPrecision
+    , toShortest
     ) where
 
-import Control.Monad (when)
-#if MIN_VERSION_base(4,4,0)
-import Control.Monad.ST.Unsafe (unsafeIOToST)
-#else
-import Control.Monad.ST (unsafeIOToST)
-#endif
-import Control.Monad.ST (ST, runST)
-import Data.Double.Conversion.FFI (ForeignFloating)
-import qualified Data.Text.Array as A
-import Data.Text.Internal (Text(Text))
-import Foreign.C.Types (CDouble, CFloat, CInt)
-import GHC.Prim (MutableByteArray#)
+import qualified Data.Double.Conversion.Convertable
+import Data.Text.Internal (Text)
 
+-- | Compute a representation in exponential format with the requested
+-- number of digits after the decimal point. The last emitted digit is
+-- rounded.  If -1 digits are requested, then the shortest exponential
+-- representation is computed.
+toExponential :: Int -> Double -> Text
+toExponential = Data.Double.Conversion.Convertable.toExponential
 
-convert :: (RealFloat a, RealFloat b, b ~ ForeignFloating a) => String -> CInt
-        -> (forall s. b -> MutableByteArray# s -> IO CInt)
-        -> a -> Text
-{-# SPECIALIZE convert :: String -> CInt -> (forall s. CDouble -> MutableByteArray# s -> IO CInt) -> Double -> Text #-}
-{-# SPECIALIZE convert :: String -> CInt -> (forall s. CFloat -> MutableByteArray# s -> IO CInt) -> Float -> Text #-}
-{-# INLINABLE convert #-}
-convert func len act val = runST go
-  where
-    go :: (forall s. ST s Text)
-    go = do
-      buf <- A.new (fromIntegral len)
-      size <- unsafeIOToST $ act (realToFrac val) (A.maBA buf)
-      when (size == -1) .
-        fail $ "Data.Double.Conversion.Text." ++ func ++
-               ": conversion failed (invalid precision requested)"
-      frozen <- A.unsafeFreeze buf
-      return $ Text frozen 0 (fromIntegral size)
+-- | Compute a decimal representation with a fixed number of digits
+-- after the decimal point. The last emitted digit is rounded.
+toFixed :: Int -> Double -> Text
+toFixed = Data.Double.Conversion.Convertable.toFixed
+
+-- | Compute the shortest string of digits that correctly represent
+-- the input number.
+toShortest :: Double -> Text
+toShortest = Data.Double.Conversion.Convertable.toShortest
+
+-- | Compute @precision@ leading digits of the given value either in
+-- exponential or decimal format. The last computed digit is rounded.
+toPrecision :: Int -> Double -> Text
+toPrecision = Data.Double.Conversion.Convertable.toPrecision

@@ -1,6 +1,7 @@
 {-# LANGUAGE CPP, MagicHash, Rank2Types, TypeFamilies #-}
+
 -- |
--- Module      : Data.Double.Conversion.TextBuilder
+-- Module      : Data.Double.Conversion.Text
 -- Copyright   : (c) 2011 MailRank, Inc.
 --
 -- License     : BSD-style
@@ -11,12 +12,13 @@
 -- Fast, efficient support for converting between double precision
 -- floating point values and text.
 --
+-- These functions are about 30 times faster than the default 'show'
+-- implementation for the 'Double' type.
 
-module Data.Double.Conversion.TextBuilder
+module Data.Double.Conversion.Internal.Text
     (
       convert
     ) where
-
 
 import Control.Monad (when)
 #if MIN_VERSION_base(4,4,0)
@@ -24,21 +26,28 @@ import Control.Monad.ST.Unsafe (unsafeIOToST)
 #else
 import Control.Monad.ST (unsafeIOToST)
 #endif
-import Data.Double.Conversion.FFI (ForeignFloating)
+import Control.Monad.ST (ST, runST)
+import Data.Double.Conversion.Internal.FFI (ForeignFloating)
 import qualified Data.Text.Array as A
-import Data.Text.Internal.Builder (Builder, writeN)
+import Data.Text.Internal (Text(Text))
 import Foreign.C.Types (CDouble, CFloat, CInt)
 import GHC.Prim (MutableByteArray#)
 
+
 convert :: (RealFloat a, RealFloat b, b ~ ForeignFloating a) => String -> CInt
         -> (forall s. b -> MutableByteArray# s -> IO CInt)
-        -> a -> Builder
-{-# SPECIALIZE convert :: String -> CInt -> (forall s. CDouble -> MutableByteArray# s -> IO CInt) -> Double -> Builder #-}
-{-# SPECIALIZE convert :: String -> CInt -> (forall s. CFloat -> MutableByteArray# s -> IO CInt) -> Float -> Builder #-}
+        -> a -> Text
+{-# SPECIALIZE convert :: String -> CInt -> (forall s. CDouble -> MutableByteArray# s -> IO CInt) -> Double -> Text #-}
+{-# SPECIALIZE convert :: String -> CInt -> (forall s. CFloat -> MutableByteArray# s -> IO CInt) -> Float -> Text #-}
 {-# INLINABLE convert #-}
-convert func len act val = writeN (fromIntegral len) $ \(A.MArray maBa) _ -> do
-    size <- unsafeIOToST $ act (realToFrac val) maBa
-    when (size == -1) .
+convert func len act val = runST go
+  where
+    go :: (forall s. ST s Text)
+    go = do
+      buf <- A.new (fromIntegral len)
+      size <- unsafeIOToST $ act (realToFrac val) (A.maBA buf)
+      when (size == -1) .
         fail $ "Data.Double.Conversion.Text." ++ func ++
                ": conversion failed (invalid precision requested)"
-    return ()
+      frozen <- A.unsafeFreeze buf
+      return $ Text frozen 0 (fromIntegral size)

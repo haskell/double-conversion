@@ -1,5 +1,5 @@
 name:           double-conversion
-version:        2.0.3.0
+version:        2.0.4.0
 license:        BSD3
 license-file:   LICENSE
 homepage:       https://github.com/Haskell-mouse/double-conversion
@@ -94,19 +94,21 @@ library
 
   exposed-modules:
     Data.Double.Conversion.Convertable
+    Data.Double.Conversion.ByteString
+    Data.Double.Conversion.Text
 
   other-modules:
-    Data.Double.Conversion.FFI
-    Data.Double.Conversion.ByteString
-    Data.Double.Conversion.ByteStringBuilder
-    Data.Double.Conversion.Text
-    Data.Double.Conversion.TextBuilder
+    Data.Double.Conversion.Internal.FFI
+    Data.Double.Conversion.Internal.ByteString
+    Data.Double.Conversion.Internal.ByteStringBuilder
+    Data.Double.Conversion.Internal.Text
+    Data.Double.Conversion.Internal.TextBuilder
 
   build-depends:
     base == 4.*,
     bytestring,
     ghc-prim,
-    text >= 0.11.0.8
+    text >= 0.11.0.8 && < 2.0
 
   if flag(developer)
     ghc-options: -Werror 
@@ -115,6 +117,8 @@ library
     cc-options: -DNDEBUG 
 
   ghc-options: -Wall 
+
+  default-language: Haskell2010
 
 test-suite tests
   type: exitcode-stdio-1.0
@@ -131,6 +135,7 @@ test-suite tests
     test-framework-hunit,
     test-framework-quickcheck2,
     text
+  default-language: Haskell2010
 
 source-repository head
   type:     git

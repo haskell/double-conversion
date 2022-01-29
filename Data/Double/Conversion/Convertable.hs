@@ -16,15 +16,15 @@ module Data.Double.Conversion.Convertable
 import Data.ByteString.Builder.Prim (primBounded)
 import Data.Text (Text)
 
-import Data.Double.Conversion.FFI
+import Data.Double.Conversion.Internal.FFI
 import Data.String (IsString)
 
 import qualified Data.ByteString.Builder as BB (Builder)
 import qualified Data.ByteString.Internal as B (ByteString(..))
-import qualified Data.Double.Conversion.ByteString as CB (convert)
-import qualified Data.Double.Conversion.ByteStringBuilder as CBB (convert)
-import qualified Data.Double.Conversion.Text as CT (convert)
-import qualified Data.Double.Conversion.TextBuilder as CTB (convert)
+import qualified Data.Double.Conversion.Internal.ByteString as CB (convert)
+import qualified Data.Double.Conversion.Internal.ByteStringBuilder as CBB (convert)
+import qualified Data.Double.Conversion.Internal.Text as CT (convert)
+import qualified Data.Double.Conversion.Internal.TextBuilder as CTB (convert)
 import qualified Data.Text.Internal.Builder as T (Builder)
 
 -- | Type class for floating data types, that cen be converted, using double-conversion library

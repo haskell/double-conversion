@@ -1,4 +1,8 @@
+#ifdef EMBEDDED_DOUBLE_CONVERSION
 #include "double-conversion.h"
+#else
+#include "double-conversion/double-conversion.h"
+#endif
 #include "hs-double-conversion.h"
 #include <stdio.h>
 

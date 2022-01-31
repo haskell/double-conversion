@@ -7,6 +7,10 @@
 -- Stability   : experimental
 -- Portability : GHC
 --
+-- This module left now only for compatibility and should not be used
+-- in new projects. 
+-- Please, use Convertable type class from Data.Double.Conversion.Convertable
+-- 
 -- Fast, efficient support for converting between double precision
 -- floating point values and text.
 --
@@ -23,54 +27,27 @@ module Data.Double.Conversion.ByteString
     , toShortest
     ) where
 
-import Control.Monad (when)
-import Foreign.ForeignPtr (withForeignPtr)
-import Data.Double.Conversion.FFI
-import Data.Word (Word8)
-import Data.ByteString.Internal (ByteString(..), mallocByteString)
-import Foreign.C.Types (CDouble, CInt)
-import Foreign.Ptr (Ptr)
-import System.IO.Unsafe (unsafePerformIO)
+import qualified Data.Double.Conversion.Convertable
+import Data.ByteString.Internal
 
 -- | Compute a representation in exponential format with the requested
 -- number of digits after the decimal point. The last emitted digit is
 -- rounded.  If -1 digits are requested, then the shortest exponential
 -- representation is computed.
 toExponential :: Int -> Double -> ByteString
-toExponential ndigits = convert "toExponential" len $ \val mba ->
-                        c_ToExponential val mba (fromIntegral ndigits)
-  where len = c_ToExponentialLength
-        {-# NOINLINE len #-}
+toExponential = Data.Double.Conversion.Convertable.toExponential
 
 -- | Compute a decimal representation with a fixed number of digits
 -- after the decimal point. The last emitted digit is rounded.
 toFixed :: Int -> Double -> ByteString
-toFixed ndigits = convert "toFixed" len $ \val mba ->
-                  c_ToFixed val mba (fromIntegral ndigits)
-  where len = c_ToFixedLength
-        {-# NOINLINE len #-}
+toFixed = Data.Double.Conversion.Convertable.toFixed
 
 -- | Compute the shortest string of digits that correctly represent
 -- the input number.
 toShortest :: Double -> ByteString
-toShortest = convert "toShortest" len c_ToShortest
-  where len = c_ToShortestLength
-        {-# NOINLINE len #-}
+toShortest = Data.Double.Conversion.Convertable.toShortest
 
 -- | Compute @precision@ leading digits of the given value either in
 -- exponential or decimal format. The last computed digit is rounded.
 toPrecision :: Int -> Double -> ByteString
-toPrecision ndigits = convert "toPrecision" len $ \val mba ->
-                      c_ToPrecision val mba (fromIntegral ndigits)
-  where len = c_ToPrecisionLength
-        {-# NOINLINE len #-}
-
-convert :: String -> CInt -> (CDouble -> Ptr Word8 -> IO CInt)
-        -> Double -> ByteString
-convert func len act val = unsafePerformIO $ do
-  fp <- mallocByteString (fromIntegral len)
-  size <- withForeignPtr fp $ act (realToFrac val)
-  when (size == -1) .
-    fail $ "Data.Double.Conversion.ByteString." ++ func ++
-           ": conversion failed (invalid precision requested)"
-  return $ PS fp 0 (fromIntegral size)
+toPrecision = Data.Double.Conversion.Convertable.toPrecision

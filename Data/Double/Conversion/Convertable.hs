@@ -27,7 +27,7 @@ import qualified Data.Double.Conversion.Internal.Text as CT (convert)
 import qualified Data.Double.Conversion.Internal.TextBuilder as CTB (convert)
 import qualified Data.Text.Internal.Builder as T (Builder)
 
--- | Type class for floating data types, that cen be converted, using double-conversion library
+-- | Type class for floating data types, that can be converted, using double-conversion library
 --
 -- Default instanced convert input to Double and then make Bytestring Builder from it.
 --

@@ -52,7 +52,7 @@ convert func len act val = runST go
 #endif
       size <- unsafeIOToST $ act (realToFrac val) ma
       when (size == -1) .
-        fail $ "Data.Double.Conversion.Text." ++ func ++
+        error $ "Data.Double.Conversion.Text." ++ func ++
                ": conversion failed (invalid precision requested)"
       frozen <- A.unsafeFreeze buf
       return $ Text frozen 0 (fromIntegral size)

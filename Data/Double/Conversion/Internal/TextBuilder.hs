@@ -43,6 +43,6 @@ convert func len act val = writeN (fromIntegral len) $ \(A.MArray maBa) _ -> do
 #endif
     size <- unsafeIOToST $ act (realToFrac val) maBa
     when (size == -1) .
-        fail $ "Data.Double.Conversion.Text." ++ func ++
+        error $ "Data.Double.Conversion.Text." ++ func ++
                ": conversion failed (invalid precision requested)"
     return ()

@@ -1,4 +1,4 @@
-#include "double-conversion/double-conversion.h"
+#include "double-conversion.h"
 #include "hs-double-conversion.h"
 #include <stdio.h>
 

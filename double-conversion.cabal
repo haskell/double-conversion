@@ -70,8 +70,6 @@ flag embedded_double_conversion
   default: True
 
 library
-  c-sources:
-    cbits/hs-double-conversion.cc
 
   if os(windows)
     if arch(x86_64)
@@ -86,6 +84,8 @@ library
 
   if flag(embedded_double_conversion)
     c-sources:
+      cbits/hs-double-conversion-embed.cc
+
       double-conversion/src/bignum.cc
       double-conversion/src/bignum-dtoa.cc
       double-conversion/src/cached-powers.cc
@@ -94,10 +94,11 @@ library
       double-conversion/src/fast-dtoa.cc
       double-conversion/src/fixed-dtoa.cc
       double-conversion/src/strtod.cc
-    cc-options: -DEMBEDDED_DOUBLE_CONVERSION
     include-dirs: double-conversion/src
   else
     extra-libraries: double-conversion
+    c-sources:
+      cbits/hs-double-conversion.cc
 
   include-dirs:
     include

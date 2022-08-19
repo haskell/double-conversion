@@ -13,6 +13,9 @@
 -- in new projects. 
 -- Please, use Convertable type class from Data.Double.Conversion.Convertable
 --
+-- It is espesially recommended to convert a large amount of numbers via text builder
+-- using methods of Convertable type class. It is about 10-15x faster.
+-- 
 -- Fast, efficient support for converting between double precision
 -- floating point values and text.
 --

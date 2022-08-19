@@ -2,8 +2,8 @@ name:           double-conversion
 version:        2.0.4.1
 license:        BSD3
 license-file:   LICENSE
-homepage:       https://github.com/Haskell-mouse/double-conversion
-bug-reports:    https://github.com/Haskell-mouse/double-conversion/issues
+homepage:       https://github.com/haskell/double-conversion
+bug-reports:    https://github.com/haskell/double-conversion/issues
 category:       Text
 author:         Bryan O'Sullivan <bos@serpentine.com>
 maintainer:     Bryan O'Sullivan <bos@serpentine.com>
@@ -25,12 +25,11 @@ description:
     The 'Text' versions of these functions are about 30 times faster
     than the default 'show' implementation for the 'Double' type.
     .
-    The 'ByteString' versions are /slower/ than the 'Text' versions;
-    roughly half the speed.  (This seems to be due to the cost of
-    allocating 'ByteString' values via @malloc@.)
+    The 'ByteString' versions are have very close speed to the 'Text' versions;
     .
-    Builder versions are slower on single value, but they are much faster on large number of values 
-    (up to 50x faster on list with 20000 doubles).  
+    Builder versions (both for Text and Bytestring) are slower on single value,
+    but they are much faster on large number of values 
+    (up to 20x faster on list with 20000 doubles).
     .
     As a final note, be aware that the @bytestring-show@ package is
     about 50% slower than simply using 'show'.

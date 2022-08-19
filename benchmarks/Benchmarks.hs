@@ -18,34 +18,34 @@ testList = [2.08345919 .. 20002.08345919] :: [Double]
 testFloatList = [2.08345919 .. 20002.08345919] :: [Float]
 
 testListBSBuilder :: (Double -> BB.Builder) -> [Double] -> BSS.ByteString
-testListBSBuilder func list = BSL.toStrict $ BBE.toLazyByteStringWith (BBE.safeStrategy 128 128) BSL.empty $ foldr (\x y -> (func x) <> y) mempty list
+testListBSBuilder func list = BSL.toStrict $ BBE.toLazyByteStringWith (BBE.safeStrategy 128 128) BSL.empty $ foldr (\x y -> (func x <> ", ") <> y) mempty list
 
 testListBSBuilderFloat :: (Float -> BB.Builder) -> [Float] -> BSS.ByteString
-testListBSBuilderFloat func list = BSL.toStrict $ BBE.toLazyByteStringWith (BBE.safeStrategy 128 128) BSL.empty $ foldr (\x y -> (func x) <> y) mempty list
+testListBSBuilderFloat func list = BSL.toStrict $ BBE.toLazyByteStringWith (BBE.safeStrategy 128 128) BSL.empty $ foldr (\x y -> (func x <> ", ") <> y) mempty list
 
 testListByteString :: (Double -> BSS.ByteString) -> [Double] -> BSS.ByteString
-testListByteString func = foldr (\x y -> (func x) <> y) mempty
+testListByteString func = foldr (\x y -> (func x <> ", ") <> y) mempty
 
 testListByteStringFloat :: (Float -> BSS.ByteString) -> [Float] -> BSS.ByteString
-testListByteStringFloat func = foldr (\x y -> (func x) <> y) mempty
+testListByteStringFloat func = foldr (\x y -> (func x <> ", ") <> y) mempty
 
 testListText :: (Double -> T.Text) -> [Double] -> T.Text
-testListText func = foldr (\x y -> (func x) <> y) mempty
+testListText func = foldr (\x y -> (func x <> ", ") <> y) mempty
 
 testListTextFloat :: (Float -> T.Text) -> [Float] -> T.Text
-testListTextFloat func = foldr (\x y -> (func x) <> y) mempty
+testListTextFloat func = foldr (\x y -> (func x <> ", ") <> y) mempty
 
 testListTextBuilder :: (Double -> BT.Builder) -> [Double] -> T.Text
-testListTextBuilder func list = TL.toStrict $ BT.toLazyText $ foldr (\x y -> (func x) <> y) mempty list
+testListTextBuilder func list = TL.toStrict $ BT.toLazyText $ foldr (\x y -> (func x <> ", ") <> y) mempty list
 
 testListTextBuilderFloat :: (Float -> BT.Builder) -> [Float] -> T.Text
-testListTextBuilderFloat func list = TL.toStrict $ BT.toLazyText $ foldr (\x y -> (func x) <> y) mempty list
+testListTextBuilderFloat func list = TL.toStrict $ BT.toLazyText $ foldr (\x y -> (func x <> ", ") <> y) mempty list
 
 testFuncBuilderDefault :: [Double] -> BSS.ByteString
-testFuncBuilderDefault = \list -> BSL.toStrict $ BB.toLazyByteString $ foldr (\x y -> (BB.doubleDec x) <> y) mempty list
+testFuncBuilderDefault = \list -> BSL.toStrict $ BB.toLazyByteString $ foldr (\x y -> (BB.doubleDec x <> ", ") <> y) mempty list
 
 testFuncBuilderDefaultFloat :: [Float] -> BSS.ByteString
-testFuncBuilderDefaultFloat = \list -> BSL.toStrict $ BB.toLazyByteString $ foldr (\x y -> (BB.floatDec x) <> y) mempty list
+testFuncBuilderDefaultFloat = \list -> BSL.toStrict $ BB.toLazyByteString $ foldr (\x y -> (BB.floatDec x <> ", ") <> y) mempty list
 
 
 main = defaultMain [

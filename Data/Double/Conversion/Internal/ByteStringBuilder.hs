@@ -12,9 +12,6 @@
 -- Fast, efficient support for converting between double precision
 -- floating point values and bytestring builder.
 
--- This functions are much slower on the single value, but also it is much faster in converting big set of
--- numbers, than bytestring functions. See benchmark.
-
 module Data.Double.Conversion.Internal.ByteStringBuilder
     (convert
     ) where

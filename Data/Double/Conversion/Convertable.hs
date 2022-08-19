@@ -51,11 +51,15 @@ import qualified Data.Text.Internal.Builder as T (Builder)
 -- Compute the shortest string of digits that correctly represent
 -- the input number.
 --
--- Conversion to text is twice faster than conversion to bytestring
 -- Conversion to text via Builder (both in the in case of bytestring and text) in case of single number
--- is much slower, than to text or bytestring directly. (2-3x)
--- But conversion large amount of numbers to text via Builder is much faster than directly (up to 50x).
--- Conversion to text via text builder is a little slower, then via bytestring builder
+-- is a bit slower, than to text or bytestring directly.
+-- But conversion a large amount of numbers to text via Builder (for example using foldr) is much faster than direct conversion to Text (up to 10-15x).
+--
+-- The same works for bytestrings: conversion, for example, a list of 20000 doubles to bytestring builder 
+-- and then to bytestring is about 13 times faster than direct conversion of this list to bytestring. 
+--
+-- Conversion to text via text builder is a little bit slower, than conversion to bytestring via bytestring builder. 
+
 
 class (RealFloat a, IsString b) => Convertable a b where
   toExponential :: Int -> a -> b

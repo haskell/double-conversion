@@ -28,21 +28,27 @@ import qualified Data.Text.Array as A
 import Data.Text.Internal.Builder (Builder, writeN)
 import Foreign.C.Types (CDouble, CFloat, CInt)
 import GHC.Prim (MutableByteArray#)
+import Control.Monad.ST (runST)
 
--- | Not implemented yet 
 convert :: (RealFloat a, RealFloat b, b ~ ForeignFloating a) => String -> CInt
         -> (forall s. b -> MutableByteArray# s -> IO CInt)
         -> a -> Builder
 {-# SPECIALIZE convert :: String -> CInt -> (forall s. CDouble -> MutableByteArray# s -> IO CInt) -> Double -> Builder #-}
 {-# SPECIALIZE convert :: String -> CInt -> (forall s. CFloat -> MutableByteArray# s -> IO CInt) -> Float -> Builder #-}
 {-# INLINABLE convert #-}
+convert func len act val = runST $ do 
 #if MIN_VERSION_text(2,0,0)
-convert func len act val = writeN (fromIntegral len) $ \(A.MutableByteArray maBa) _ -> do
+  mTempArr@(A.MutableByteArray tempMArr) <- A.new (fromIntegral len)
 #else
-convert func len act val = writeN (fromIntegral len) $ \(A.MArray maBa) _ -> do
+  mTempArr@(A.MArray tempMArr) <- A.new (fromIntegral len)
 #endif
-    size <- unsafeIOToST $ act (realToFrac val) maBa
-    when (size == -1) .
-        error $ "Data.Double.Conversion.Text." ++ func ++
-               ": conversion failed (invalid precision requested)"
-    return ()
+  size <- unsafeIOToST $ act (realToFrac val) tempMArr
+  tempArr <- A.unsafeFreeze mTempArr
+  when (size == -1) .
+      fail $ "Data.Double.Conversion.Text." ++ func ++
+              ": conversion failed."
+#if MIN_VERSION_text(2,0,0)
+  return $ writeN (fromIntegral size) $ \mArr _ -> A.copyI (fromIntegral size) mArr 0 tempArr 0
+#else
+  return $ writeN (fromIntegral size) $ \mArr _ -> A.copyI mArr 0 tempArr 0 (fromIntegral size)
+#endif

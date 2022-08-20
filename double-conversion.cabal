@@ -69,7 +69,10 @@ flag embedded_double_conversion
   default: True
 
 library
-  if os(darwin)
+  if impl(ghc >= 9.4)
+    build-depends: system-cxx-std-lib == 1.0
+
+  elif os(darwin)
     extra-libraries: c++
   elif os(windows)
     if arch(x86_64) && impl(ghc < 8.6.5)

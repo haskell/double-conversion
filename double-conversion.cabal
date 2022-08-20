@@ -1,6 +1,7 @@
+cabal-version:  2.2
 name:           double-conversion
 version:        2.0.4.1
-license:        BSD3
+license:        BSD-3-Clause
 license-file:   LICENSE
 homepage:       https://github.com/haskell/double-conversion
 bug-reports:    https://github.com/haskell/double-conversion/issues
@@ -9,7 +10,6 @@ author:         Bryan O'Sullivan <bos@serpentine.com>
 maintainer:     Bryan O'Sullivan <bos@serpentine.com>
 stability:      experimental
 synopsis:       Fast conversion between single and double precision floating point and text
-cabal-version:  >= 1.10
 build-type:     Simple
 description:
     A library that performs fast, accurate conversion between 

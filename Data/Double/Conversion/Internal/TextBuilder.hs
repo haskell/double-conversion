@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, MagicHash, Rank2Types, TypeFamilies #-}
+{-# LANGUAGE CPP, MagicHash, Rank2Types, TypeFamilies, TypeOperators #-}
 -- |
 -- Module      : Data.Double.Conversion.TextBuilder
 -- Copyright   : (c) 2011 MailRank, Inc.
@@ -45,7 +45,7 @@ convert func len act val = runST $ do
   size <- unsafeIOToST $ act (realToFrac val) tempMArr
   tempArr <- A.unsafeFreeze mTempArr
   when (size == -1) .
-      fail $ "Data.Double.Conversion.Text." ++ func ++
+      error $ "Data.Double.Conversion.Text." ++ func ++
               ": conversion failed."
 #if MIN_VERSION_text(2,0,0)
   return $ writeN (fromIntegral size) $ \mArr _ -> A.copyI (fromIntegral size) mArr 0 tempArr 0

@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, MagicHash, Rank2Types, TypeFamilies, BangPatterns #-}
+{-# LANGUAGE CPP, MagicHash, Rank2Types, TypeFamilies, BangPatterns, TypeOperators #-}
 
 -- |
 -- Module      : Data.Double.Conversion.Text

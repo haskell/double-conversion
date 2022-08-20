@@ -1,5 +1,5 @@
 {-# LANGUAGE DefaultSignatures, InstanceSigs, MagicHash, MultiParamTypeClasses,
-             TypeFamilies #-}
+             TypeFamilies, TypeOperators #-}
 
 -- |
 -- Module      : Data.Double.Conversion.Convertable

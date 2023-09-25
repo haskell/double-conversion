@@ -11,6 +11,7 @@ maintainer:     Bryan O'Sullivan <bos@serpentine.com>
 stability:      experimental
 synopsis:       Fast conversion between single and double precision floating point and text
 build-type:     Simple
+tested-with:    GHC ==9.0.2 || ==9.2.8 || ==9.4.7 || ==9.6.2
 description:
     A library that performs fast, accurate conversion between 
     floating point and text.

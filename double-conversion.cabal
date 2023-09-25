@@ -87,7 +87,7 @@ library
     extra-libraries: stdc++
 
   if flag(embedded_double_conversion)
-    c-sources:
+    cxx-sources:
       cbits/hs-double-conversion-embed.cc
 
       double-conversion/src/bignum.cc
@@ -101,7 +101,7 @@ library
     include-dirs: double-conversion/src
   else
     extra-libraries: double-conversion
-    c-sources:
+    cxx-sources:
       cbits/hs-double-conversion.cc
 
   include-dirs:

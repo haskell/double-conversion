@@ -47,7 +47,12 @@ import Foreign.C.Types (CDouble, CFloat, CInt)
 import Foreign.Ptr (Ptr)
 import GHC.Prim (MutableByteArray#)
 
+#if __GLASGOW_HASKELL__ >= 906
+import Data.Kind (Type)
+type family ForeignFloating h :: Type
+#else
 type family ForeignFloating h :: *
+#endif
 
 type instance ForeignFloating Double = CDouble
 type instance ForeignFloating Float = CFloat

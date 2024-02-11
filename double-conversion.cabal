@@ -1,6 +1,6 @@
 cabal-version:  2.2
 name:           double-conversion
-version:        2.0.4.2
+version:        2.0.5.0
 license:        BSD-2-Clause
 license-file:   LICENSE
 homepage:       https://github.com/haskell/double-conversion

@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeFamilies, TypeOperators #-}
+{-# LANGUAGE CPP, TypeFamilies, TypeOperators #-}
 
 -- |
 -- Module      : Data.Double.Conversion.ByteStringBuilder
@@ -18,7 +18,11 @@ module Data.Double.Conversion.Internal.ByteStringBuilder
 
 import Control.Monad (when)
 
+#if MIN_VERSION_bytestring(0,10,12)
+import Data.ByteString.Builder.Prim.Internal (BoundedPrim, boundedPrim)
+#else
 import Data.ByteString.Builder.Prim.Internal (BoundedPrim, boudedPrim)
+#endif
 
 import Data.Double.Conversion.Internal.FFI (ForeignFloating)
 import Data.Word (Word8)
@@ -29,7 +33,11 @@ convert :: (RealFloat a, RealFloat b , b ~ ForeignFloating a) => String -> CInt 
 {-# SPECIALIZE convert :: String -> CInt -> (CDouble -> Ptr Word8 -> IO CInt) -> BoundedPrim Double #-}
 {-# SPECIALIZE convert :: String -> CInt -> (CFloat -> Ptr Word8 -> IO CInt) -> BoundedPrim Float #-}
 {-# INLINABLE convert #-}
+#if MIN_VERSION_bytestring(0,10,12)
+convert func len act = boundedPrim (fromIntegral len) $ \val ptr -> do
+#else
 convert func len act = boudedPrim (fromIntegral len) $ \val ptr -> do
+#endif
   size <- act (realToFrac val) ptr
   when (size == -1) .
     fail $ "Data.Double.Conversion.ByteString." ++ func ++
